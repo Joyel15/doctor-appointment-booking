@@ -4,11 +4,15 @@ dotenv.config();
 import express from "express";
 import cors from "cors";
 import connectDB from "./config/db.js";
+import authRoutes from "./routes/authRoutes.js";
 
 // Create an Express application
 const app = express();
 app.use(express.json());
 app.use(cors());
+
+// Routes
+app.use("/api/auth",authRoutes);
 
 // Use the port from the environment variables,
 // or default to 5000 if none is provided
