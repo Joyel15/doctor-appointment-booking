@@ -2,10 +2,13 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import express from "express";
+import cors from "cors";
 import connectDB from "./config/db.js";
 
 // Create an Express application
 const app = express();
+app.use(express.json());
+app.use(cors());
 
 // Use the port from the environment variables,
 // or default to 5000 if none is provided
