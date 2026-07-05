@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema(
       trim: true,
       required: true,
     },
+
     email: {
       type: String,
       trim: true,
@@ -15,18 +16,22 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+
     password: {
       type: String,
       required: true,
     },
+
     role: {
       type: String,
       enum: ["patient", "doctor", "admin"],
       default: "patient",
     },
+
     phone: {
       type: String,
     },
+    
     profilePic: {
       type: String,
       default: "",
