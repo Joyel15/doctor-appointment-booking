@@ -5,6 +5,7 @@ import express from "express";
 import cors from "cors";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
+import doctorRoutes from "./routes/doctorRoutes.js";
 
 // Create an Express application
 const app = express();
@@ -13,6 +14,7 @@ app.use(cors());
 
 // Routes
 app.use("/api/auth",authRoutes);
+app.use("/api/doctors", doctorRoutes);
 
 // Use the port from the environment variables,
 // or default to 5000 if none is provided
