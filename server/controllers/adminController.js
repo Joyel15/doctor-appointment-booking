@@ -71,4 +71,4 @@ export const getAllUsers = async (req, res) => {
       error: error.message,
     });
   }
-};
+};`                   `
