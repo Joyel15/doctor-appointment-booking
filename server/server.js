@@ -8,6 +8,7 @@ import authRoutes from "./routes/authRoutes.js";
 import doctorRoutes from "./routes/doctorRoutes.js";
 import appointmentRoutes from "./routes/appointmentRoutes.js"
 import adminRoutes from "./routes/adminRoutes.js";
+import reviewRoutes from "./routes/reviewRoutes.js";
 
 // Create an Express application
 const app = express();
@@ -19,6 +20,7 @@ app.use("/api/auth",authRoutes);
 app.use("/api/doctors", doctorRoutes);
 app.use("/api/appointments", appointmentRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/reviews",reviewRoutes);
 
 // Use the port from the environment variables,
 // or default to 5000 if none is provided
