@@ -42,10 +42,10 @@ export const approveDoctor = async (req, res) => {
     await doctor.save();
 
     // Update the linked user's role to "doctor"
-    await User.findByIdAndUpdate(
+     const user = await User.findByIdAndUpdate(
       doctor.doctorId,
       { role: "doctor" },
-      { new : true }
+      { new: true }
     );
     
     // Send approval email to the doctor
