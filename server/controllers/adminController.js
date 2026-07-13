@@ -1,5 +1,6 @@
 import User from "../models/User.js"
 import Doctor from "../models/Doctor.js";
+import sendEmail from "../utils/sendEmail.js";
 
 // Retrieve all doctor applications that are awaiting approval
 export const getPendingDoctors = async (req, res) => {
@@ -43,13 +44,27 @@ export const approveDoctor = async (req, res) => {
     // Update the linked user's role to "doctor"
     await User.findByIdAndUpdate(
       doctor.doctorId,
-      { role: "doctor" }
+      { role: "doctor" },
+      { new : true }
+    );
+    
+    // Send approval email to the doctor
+    await sendEmail(
+      user.email,
+      "Your Doctor Application Has Been Approved",
+      `
+        <h2>Congratulations, ${user.name}!</h2>
+        <p>Your application to join as a doctor has been approved.</p>
+        <p><strong>Specialization:</strong> ${doctor.specialization}</p>
+        <p>You can now log in and start managing your appointments.</p>
+      `
     );
 
     return res.status(200).json({
       message: "Doctor approved successfully",
       doctor,
     });
+
   } catch (error) {
     return res.status(500).json({
       message: "Server error",

@@ -1,5 +1,7 @@
 import Appointment from "../models/Appointment.js";
 import Doctor from "../models/Doctor.js";
+import sendEmail from "../utils/sendEmail.js";
+import User from "../models/User.js";
 
 // Book a new appointment
 export const bookAppointment = async (req, res) => {
@@ -35,11 +37,28 @@ export const bookAppointment = async (req, res) => {
       status: "pending",
     });
 
+    // Fetch patient details to get their email
+    const patient = await User.findById(patientId);
+
+    // Send confirmation email to patient
+    await sendEmail(
+      patient.email,
+      "Appointment Booked Successfully",
+      `
+        <h2>Your appointment has been booked</h2>
+        <p><strong>Date:</strong> ${date}</p>
+        <p><strong>Time Slot:</strong> ${timeSlot}</p>
+        <p><strong>Reason:</strong> ${reason || "Not specified"}</p>
+        <p><strong>Status:</strong> Pending confirmation from the doctor</p>
+      `
+    )
+
     // Return the newly created appointment
     res.status(201).json({
       message: "Application booked successfully",
       appointment,
     });
+
   } catch (error) {
     return res.status(500).json({
       message: "Server error",
