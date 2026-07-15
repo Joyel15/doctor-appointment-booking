@@ -50,15 +50,14 @@ export const bookAppointment = async (req, res) => {
         <p><strong>Time Slot:</strong> ${timeSlot}</p>
         <p><strong>Reason:</strong> ${reason || "Not specified"}</p>
         <p><strong>Status:</strong> Pending confirmation from the doctor</p>
-      `
-    )
+      `,
+    );
 
     // Return the newly created appointment
     res.status(201).json({
       message: "Application booked successfully",
       appointment,
     });
-
   } catch (error) {
     return res.status(500).json({
       message: "Server error",
@@ -66,23 +65,27 @@ export const bookAppointment = async (req, res) => {
     });
   }
 };
-
 
 // Retrieve all appointments for the authenticated patient
 export const getPatientAppointments = async (req, res) => {
   try {
     // Get the authenticated patient's ID
     const patientId = req.user.id;
-    
+
     // Find all appointments for this patient
     // Include selected doctor details and show newest appointments first
     const appointments = await Appointment.find({ patientId })
-    .populate("doctorId", "specialization fees")
-    .sort({ createdAt: -1 });
+      .populate({
+        path: "doctorId",
+        populate: {
+          path: "doctorId",
+          select: "name email phone profilePic",
+        },
+      })
+      .sort({ createdAt: -1 });
 
     // Return the patients appointments
     return res.status(200).json(appointments);
-
   } catch (error) {
     return res.status(500).json({
       message: "Server error",
@@ -91,43 +94,40 @@ export const getPatientAppointments = async (req, res) => {
   }
 };
 
-
 // Retrieve all appointments for the authenticated doctor
-export const getDoctorAppointments = async (req,res) => {
-  try{
+export const getDoctorAppointments = async (req, res) => {
+  try {
     // Find the doctor's profile using the authenticated user's ID
     // (req.user.id refers to the User document, not the Doctor document)
-    const doctor = await Doctor.findOne({ doctorId: req.user.id  });
+    const doctor = await Doctor.findOne({ doctorId: req.user.id });
 
     // Return 404 if doctor the profile doesn't exist
-    if(!doctor){
+    if (!doctor) {
       return res.status(404).json({
-        message : "Doctor profile not found",
+        message: "Doctor profile not found",
       });
     }
 
     // Find appointments linked to this doctor's profile
     // Include selected patient information and show newest appointments first
-    const appointments =  await Appointment.find({
+    const appointments = await Appointment.find({
       doctorId: doctor._id,
     })
-    .populate("patientId", "name email phone")
-    .sort({ createdAt : -1 })
-    
+      .populate("patientId", "name email phone")
+      .sort({ createdAt: -1 });
+
     // Return the doctor's appointments
     return res.status(200).json(appointments);
-
   } catch (error) {
     return res.status(500).json({
-      message : "Server error",
-      error : error.message,
+      message: "Server error",
+      error: error.message,
     });
   }
 };
 
-
 // Update appointment status (doctor confirms/cancels/completes)
-export const updateAppointmentStatus = async (req,res) => {
+export const updateAppointmentStatus = async (req, res) => {
   try {
     // Get appointment ID from URL parameters
     const { id } = req.params;
@@ -136,12 +136,7 @@ export const updateAppointmentStatus = async (req,res) => {
     const { status } = req.body;
 
     // Allowed appointment statuses
-    const allowedStatuses = [
-      "pending",
-      "confirmed",
-      "cancelled",
-      "completed",
-    ];
+    const allowedStatuses = ["pending", "confirmed", "cancelled", "completed"];
 
     // Validate the provided status
     if (!allowedStatuses.includes(status)) {
@@ -170,7 +165,7 @@ export const updateAppointmentStatus = async (req,res) => {
       });
     }
 
-     // Ensure the appointment belongs to this doctor
+    // Ensure the appointment belongs to this doctor
     if (appointment.doctorId.toString() !== doctor._id.toString()) {
       return res.status(403).json({
         message: "Not authorized to update this appointment",
@@ -195,11 +190,10 @@ export const updateAppointmentStatus = async (req,res) => {
       message: "Appointment status updated successfully",
       appointment,
     });
-
-  } catch (error){
+  } catch (error) {
     return res.status(500).json({
-      message : "Server error",
-      error : error.message,
-    })
+      message: "Server error",
+      error: error.message,
+    });
   }
-}
+};
