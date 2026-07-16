@@ -4,6 +4,7 @@ import {
   getAllDoctors,
   getDoctorById,
   updateDoctor,
+  getMyProfile,
 } from "../controllers/doctorController.js";
 
 import authMiddleware from "../middleware/authMiddleware.js";
@@ -14,6 +15,9 @@ const router = express.Router();
 
 // Submit a doctor application (authenticated users only)
 router.post("/apply", authMiddleware, applyDoctor);
+
+// Get logged-in doctor's own profile
+router.get("/me", authMiddleware, roleMiddleware("doctor"), getMyProfile);
 
 // Retrieve all approved doctors (public endpoint)
 router.get("/", getAllDoctors);
