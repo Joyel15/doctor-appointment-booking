@@ -32,7 +32,7 @@ const Dashboard = () => {
       setAppointments(res.data);
     } catch (err) {
       setError(
-        err.response?.data?.message || "Failed to load your appointments."
+        err.response?.data?.message || "Failed to load your appointments.",
       );
     } finally {
       setLoading(false);
@@ -55,9 +55,7 @@ const Dashboard = () => {
       setReviewModal(null);
       setReviewData({ rating: 5, comment: "" });
     } catch (err) {
-      toast.error(
-        err.response?.data?.message || "Failed to submit review."
-      );
+      toast.error(err.response?.data?.message || "Failed to submit review.");
     } finally {
       setSubmittingReview(false);
     }
@@ -66,21 +64,45 @@ const Dashboard = () => {
   const stats = useMemo(() => {
     const total = appointments.length;
     const pending = appointments.filter((a) => a.status === "pending").length;
-    const confirmed = appointments.filter((a) => a.status === "confirmed").length;
-    const completed = appointments.filter((a) => a.status === "completed").length;
+    const confirmed = appointments.filter(
+      (a) => a.status === "confirmed",
+    ).length;
+    const completed = appointments.filter(
+      (a) => a.status === "completed",
+    ).length;
 
     return [
-      { label: "Total Appointments", value: total, color: "bg-blue-50 text-blue-700" },
-      { label: "Pending", value: pending, color: "bg-yellow-50 text-yellow-700" },
-      { label: "Confirmed", value: confirmed, color: "bg-green-50 text-green-700" },
-      { label: "Completed", value: completed, color: "bg-purple-50 text-purple-700" },
+      {
+        label: "Total Appointments",
+        value: total,
+        color: "bg-blue-50 text-blue-700",
+      },
+      {
+        label: "Pending",
+        value: pending,
+        color: "bg-yellow-50 text-yellow-700",
+      },
+      {
+        label: "Confirmed",
+        value: confirmed,
+        color: "bg-green-50 text-green-700",
+      },
+      {
+        label: "Completed",
+        value: completed,
+        color: "bg-purple-50 text-purple-700",
+      },
     ];
   }, [appointments]);
 
   const recentAppointments = appointments.slice(0, 5);
 
   if (loading) {
-    return <div className="px-4 py-10"><Spinner /></div>;
+    return (
+      <div className="px-4 py-10">
+        <Spinner />
+      </div>
+    );
   }
 
   if (error) {
@@ -89,7 +111,6 @@ const Dashboard = () => {
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-10 max-w-6xl mx-auto">
-
       <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-8">
         Welcome back, {user?.name}
       </h1>
@@ -97,7 +118,10 @@ const Dashboard = () => {
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
         {stats.map((stat) => (
-          <div key={stat.label} className={`rounded-xl p-4 sm:p-6 ${stat.color}`}>
+          <div
+            key={stat.label}
+            className={`rounded-xl p-4 sm:p-6 ${stat.color}`}
+          >
             <p className="text-2xl sm:text-3xl font-bold">{stat.value}</p>
             <p className="text-sm mt-1">{stat.label}</p>
           </div>
@@ -117,6 +141,12 @@ const Dashboard = () => {
           className="bg-white border border-gray-300 text-gray-700 text-center px-6 py-3 rounded-lg font-medium hover:bg-gray-50 transition"
         >
           Find Doctors
+        </Link>
+        <Link
+          to="/patient/reviews"
+          className="bg-white border border-gray-300 text-gray-700 text-center px-6 py-3 rounded-lg font-medium hover:bg-gray-50 transition"
+        >
+          My Reviews
         </Link>
       </div>
 
@@ -145,7 +175,10 @@ const Dashboard = () => {
 
               <tbody>
                 {recentAppointments.map((appointment) => (
-                  <tr key={appointment._id} className="border-t border-gray-100">
+                  <tr
+                    key={appointment._id}
+                    className="border-t border-gray-100"
+                  >
                     <td className="px-6 py-3 whitespace-nowrap">
                       Dr.{" "}
                       {appointment.doctorId?.doctorId?.name ||
@@ -259,7 +292,6 @@ const Dashboard = () => {
           </div>
         </div>
       )}
-
     </div>
   );
 };

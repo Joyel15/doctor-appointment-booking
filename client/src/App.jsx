@@ -19,6 +19,7 @@ import PatientDashboard from "./pages/patient/Dashboard.jsx";
 import MyAppointments from "./pages/patient/MyAppointments.jsx";
 import BookAppointment from "./pages/patient/BookAppointment.jsx";
 import ApplyDoctor from "./pages/patient/ApplyDoctor.jsx";
+import MyReviews from "./pages/patient/MyReviews.jsx";
 
 // ---------- Doctor Pages ----------
 import DoctorDashboard from "./pages/doctor/Dashboard.jsx";
@@ -137,6 +138,17 @@ function App() {
               <ProtectedRoute role="patient">
                 <Layout>
                   <ApplyDoctor />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/patient/reviews"
+            element={
+              <ProtectedRoute role="patient">
+                <Layout>
+                  <MyReviews />
                 </Layout>
               </ProtectedRoute>
             }
