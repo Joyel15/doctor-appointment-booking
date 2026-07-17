@@ -18,6 +18,7 @@ import NotFound from "./pages/public/NotFound.jsx";
 import PatientDashboard from "./pages/patient/Dashboard.jsx";
 import MyAppointments from "./pages/patient/MyAppointments.jsx";
 import BookAppointment from "./pages/patient/BookAppointment.jsx";
+import ApplyDoctor from "./pages/patient/ApplyDoctor.jsx";
 
 // ---------- Doctor Pages ----------
 import DoctorDashboard from "./pages/doctor/Dashboard.jsx";
@@ -33,15 +34,12 @@ function App() {
   return (
     // Enables client-side routing
     <BrowserRouter>
-
       {/* Makes authentication state available throughout the app */}
       <AuthProvider>
-
         {/* Global toast notifications */}
         <Toaster position="top-center" richColors />
 
         <Routes>
-
           {/* ===================== PUBLIC ROUTES ===================== */}
 
           <Route
@@ -133,6 +131,17 @@ function App() {
             }
           />
 
+          <Route
+            path="/patient/apply-doctor"
+            element={
+              <ProtectedRoute role="patient">
+                <Layout>
+                  <ApplyDoctor />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+
           {/* ===================== DOCTOR ROUTES ===================== */}
 
           <Route
@@ -213,11 +222,8 @@ function App() {
               </Layout>
             }
           />
-
         </Routes>
-
       </AuthProvider>
-
     </BrowserRouter>
   );
 }

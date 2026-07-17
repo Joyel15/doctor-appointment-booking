@@ -4,33 +4,21 @@ import { FaBars, FaTimes, FaUserCircle } from "react-icons/fa";
 import { useAuth } from "../../context/AuthContext.jsx";
 
 const Navbar = () => {
-  // Controls mobile navigation menu
   const [menuOpen, setMenuOpen] = useState(false);
-
-  // Authentication state and logout function
   const { user, logout } = useAuth();
-
-  // Used for redirecting after logout
   const navigate = useNavigate();
 
-  // Return dashboard route based on logged-in user's role
   const getDashboardLink = () => {
     switch (user?.role) {
-      case "patient":
-        return "/patient/dashboard";
-      case "doctor":
-        return "/doctor/dashboard";
-      case "admin":
-        return "/admin/dashboard";
-      default:
-        return "/";
+      case "patient": return "/patient/dashboard";
+      case "doctor": return "/doctor/dashboard";
+      case "admin": return "/admin/dashboard";
+      default: return "/";
     }
   };
 
-  // Close mobile menu
   const closeMenu = () => setMenuOpen(false);
 
-  // Logout user and redirect to login page
   const handleLogout = () => {
     logout();
     closeMenu();
@@ -43,40 +31,36 @@ const Navbar = () => {
         <div className="flex h-16 items-center justify-between">
 
           {/* Logo */}
-          <Link
-            to="/"
-            onClick={closeMenu}
-            className="text-xl font-bold text-blue-600"
-          >
+          <Link to="/" onClick={closeMenu} className="text-xl font-bold text-blue-600">
             MediBook
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-6">
-            <Link
-              to="/"
-              className="text-gray-700 hover:text-blue-600 transition-colors"
-            >
+            <Link to="/" className="text-gray-700 hover:text-blue-600 transition-colors">
               Home
             </Link>
 
-            <Link
-              to="/doctors"
-              className="text-gray-700 hover:text-blue-600 transition-colors"
-            >
+            <Link to="/doctors" className="text-gray-700 hover:text-blue-600 transition-colors">
               Doctors
             </Link>
 
             {user ? (
               <>
-                <Link
-                  to={getDashboardLink()}
-                  className="text-gray-700 hover:text-blue-600 transition-colors"
-                >
+                <Link to={getDashboardLink()} className="text-gray-700 hover:text-blue-600 transition-colors">
                   Dashboard
                 </Link>
 
-                {/* Logged-in user */}
+                {/* Only show for patients */}
+                {user.role === "patient" && (
+                  <Link
+                    to="/patient/apply-doctor"
+                    className="text-gray-700 hover:text-blue-600 transition-colors"
+                  >
+                    Become a Doctor
+                  </Link>
+                )}
+
                 <div className="flex items-center gap-2 text-gray-700">
                   <FaUserCircle className="text-lg" />
                   <span className="text-sm">Hi, {user.name}</span>
@@ -91,17 +75,11 @@ const Navbar = () => {
               </>
             ) : (
               <>
-                <Link
-                  to="/login"
-                  className="text-gray-700 hover:text-blue-600 transition-colors"
-                >
+                <Link to="/login" className="text-gray-700 hover:text-blue-600 transition-colors">
                   Login
                 </Link>
 
-                <Link
-                  to="/register"
-                  className="rounded-lg bg-blue-600 px-4 py-1.5 text-sm text-white transition-colors hover:bg-blue-700"
-                >
+                <Link to="/register" className="rounded-lg bg-blue-600 px-4 py-1.5 text-sm text-white transition-colors hover:bg-blue-700">
                   Register
                 </Link>
               </>
@@ -122,35 +100,31 @@ const Navbar = () => {
 
         {/* Mobile Navigation */}
         {menuOpen && (
-          <div
-            id="mobile-menu"
-            className="flex flex-col gap-3 pb-4 md:hidden"
-          >
-            <Link
-              to="/"
-              onClick={closeMenu}
-              className="py-1 text-gray-700 hover:text-blue-600 transition-colors"
-            >
+          <div id="mobile-menu" className="flex flex-col gap-3 pb-4 md:hidden">
+            <Link to="/" onClick={closeMenu} className="py-1 text-gray-700 hover:text-blue-600 transition-colors">
               Home
             </Link>
 
-            <Link
-              to="/doctors"
-              onClick={closeMenu}
-              className="py-1 text-gray-700 hover:text-blue-600 transition-colors"
-            >
+            <Link to="/doctors" onClick={closeMenu} className="py-1 text-gray-700 hover:text-blue-600 transition-colors">
               Doctors
             </Link>
 
             {user ? (
               <>
-                <Link
-                  to={getDashboardLink()}
-                  onClick={closeMenu}
-                  className="py-1 text-gray-700 hover:text-blue-600 transition-colors"
-                >
+                <Link to={getDashboardLink()} onClick={closeMenu} className="py-1 text-gray-700 hover:text-blue-600 transition-colors">
                   Dashboard
                 </Link>
+
+                {/* Only show for patients */}
+                {user.role === "patient" && (
+                  <Link
+                    to="/patient/apply-doctor"
+                    onClick={closeMenu}
+                    className="py-1 text-gray-700 hover:text-blue-600 transition-colors"
+                  >
+                    Become a Doctor
+                  </Link>
+                )}
 
                 <div className="flex items-center gap-2 py-1 text-gray-700">
                   <FaUserCircle className="text-lg" />
@@ -166,19 +140,11 @@ const Navbar = () => {
               </>
             ) : (
               <>
-                <Link
-                  to="/login"
-                  onClick={closeMenu}
-                  className="py-1 text-gray-700 hover:text-blue-600 transition-colors"
-                >
+                <Link to="/login" onClick={closeMenu} className="py-1 text-gray-700 hover:text-blue-600 transition-colors">
                   Login
                 </Link>
 
-                <Link
-                  to="/register"
-                  onClick={closeMenu}
-                  className="inline-block w-fit rounded-lg bg-blue-600 px-4 py-2 text-sm text-white transition-colors hover:bg-blue-700"
-                >
+                <Link to="/register" onClick={closeMenu} className="inline-block w-fit rounded-lg bg-blue-600 px-4 py-2 text-sm text-white transition-colors hover:bg-blue-700">
                   Register
                 </Link>
               </>
