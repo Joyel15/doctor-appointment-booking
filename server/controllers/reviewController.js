@@ -70,6 +70,86 @@ export const createReview = async (req, res) => {
   }
 };
 
+// Update review
+export const updateReview = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { rating, comment } = req.body;
+
+    // Find the review
+    const review = await Review.findById(id);
+
+    if (!review) {
+      return res.status(404).json({ message: "Review not found" });
+    }
+
+    // Ownership check — only the patient who wrote it can update it
+    if (review.patientId.toString() !== req.user.id) {
+      return res.status(403).json({ message: "Not authorized to update this review" });
+    }
+
+    // Update only rating and comment
+    if (rating !== undefined) review.rating = rating;
+    if (comment !== undefined) review.comment = comment;
+
+    await review.save();
+
+    res.status(200).json({
+      message: "Review updated successfully",
+      review,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+
+// Delete review
+export const deleteReview = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Find the review
+    const review = await Review.findById(id);
+
+    if (!review) {
+      return res.status(404).json({ message: "Review not found" });
+    }
+
+    // Ownership check — only the patient who wrote it can delete it
+    if (review.patientId.toString() !== req.user.id) {
+      return res.status(403).json({ message: "Not authorized to delete this review" });
+    }
+
+    // Delete the review
+    await Review.findByIdAndDelete(id);
+
+    res.status(200).json({ message: "Review deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+
+// Patient reviews
+export const getMyReviews = async (req, res) => {
+  try {
+    const reviews = await Review.find({ patientId: req.user.id })
+      .populate({
+        path: "doctorId",
+        populate: {
+          path: "doctorId",
+          select: "name",
+        },
+      })
+      .sort({ createdAt: -1 });
+
+    res.status(200).json(reviews);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
 
 // Retrieve all reviews for a specific doctor
 export const getDoctorReviews = async (req, res) => {

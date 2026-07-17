@@ -148,6 +148,7 @@ export const updateDoctor = async (req, res) => {
       error: error.message,
     });
   }
+};
 
 
   // Get logged-in doctor's own profile
@@ -185,5 +186,4 @@ export const updateDoctor = async (req, res) => {
       message: "Failed to fetch doctor profile.",
     });
   }
-};
 };

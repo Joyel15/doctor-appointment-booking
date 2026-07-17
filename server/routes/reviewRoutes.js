@@ -1,6 +1,9 @@
 import express from "express";
 import {
   createReview,
+  updateReview,
+  deleteReview,
+  getMyReviews,
   getDoctorReviews,
 } from "../controllers/reviewController.js";
 
@@ -20,5 +23,14 @@ router.post(
 
 // Retrieve all reviews for a specific doctor (Public)
 router.get("/doctor/:id", getDoctorReviews);
+
+// Update a review (patients only)
+router.put("/:id", authMiddleware, roleMiddleware("patient"), updateReview);
+
+// Delete a review (patients only)
+router.delete("/:id", authMiddleware, roleMiddleware("patient"), deleteReview);
+
+// Get reviews (patients only)
+router.get("/my", authMiddleware, roleMiddleware("patient"), getMyReviews);
 
 export default router;
