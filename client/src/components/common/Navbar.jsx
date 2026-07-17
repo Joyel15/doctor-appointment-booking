@@ -47,10 +47,6 @@ const Navbar = () => {
 
             {user ? (
               <>
-                <Link to={getDashboardLink()} className="text-gray-700 hover:text-blue-600 transition-colors">
-                  Dashboard
-                </Link>
-
                 {/* Only show for patients */}
                 {user.role === "patient" && (
                   <Link
@@ -61,10 +57,14 @@ const Navbar = () => {
                   </Link>
                 )}
 
-                <div className="flex items-center gap-2 text-gray-700">
+                {/* Avatar + name links to dashboard */}
+                <Link
+                  to={getDashboardLink()}
+                  className="flex items-center gap-2 text-gray-700 hover:text-blue-600 transition-colors"
+                >
                   <FaUserCircle className="text-lg" />
                   <span className="text-sm">Hi, {user.name}</span>
-                </div>
+                </Link>
 
                 <button
                   onClick={handleLogout}
@@ -78,7 +78,6 @@ const Navbar = () => {
                 <Link to="/login" className="text-gray-700 hover:text-blue-600 transition-colors">
                   Login
                 </Link>
-
                 <Link to="/register" className="rounded-lg bg-blue-600 px-4 py-1.5 text-sm text-white transition-colors hover:bg-blue-700">
                   Register
                 </Link>
@@ -111,10 +110,6 @@ const Navbar = () => {
 
             {user ? (
               <>
-                <Link to={getDashboardLink()} onClick={closeMenu} className="py-1 text-gray-700 hover:text-blue-600 transition-colors">
-                  Dashboard
-                </Link>
-
                 {/* Only show for patients */}
                 {user.role === "patient" && (
                   <Link
@@ -126,10 +121,15 @@ const Navbar = () => {
                   </Link>
                 )}
 
-                <div className="flex items-center gap-2 py-1 text-gray-700">
+                {/* Avatar + name links to dashboard */}
+                <Link
+                  to={getDashboardLink()}
+                  onClick={closeMenu}
+                  className="flex items-center gap-2 py-1 text-gray-700 hover:text-blue-600 transition-colors"
+                >
                   <FaUserCircle className="text-lg" />
                   <span className="text-sm">Hi, {user.name}</span>
-                </div>
+                </Link>
 
                 <button
                   onClick={handleLogout}
@@ -143,7 +143,6 @@ const Navbar = () => {
                 <Link to="/login" onClick={closeMenu} className="py-1 text-gray-700 hover:text-blue-600 transition-colors">
                   Login
                 </Link>
-
                 <Link to="/register" onClick={closeMenu} className="inline-block w-fit rounded-lg bg-blue-600 px-4 py-2 text-sm text-white transition-colors hover:bg-blue-700">
                   Register
                 </Link>
