@@ -42,7 +42,7 @@ export const createReview = async (req, res) => {
 
     if (existingReview) {
       return res.status(400).json({
-        message: "You have already reviewed this appointment",
+        message: "You have already reviewed this appointment. Go to My Reviews to edit it.",
       });
     }
 
