@@ -1,7 +1,5 @@
-import { useState, useEffect } from "react";
-import { toast } from "sonner";
-import axios from "../../api/axios.js";
 import Spinner from "../../components/common/Spinner.jsx";
+import { useManageAppointments } from "../../hooks/useManageAppointments.js";
 
 // Badge colors for each appointment status
 const statusStyles = {
@@ -12,77 +10,8 @@ const statusStyles = {
 };
 
 const ManageAppointments = () => {
-  // -----------------------------
-  // State
-  // -----------------------------
-  const [appointments, setAppointments] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  // Stores the appointment currently being updated
-  const [updatingId, setUpdatingId] = useState(null);
-
-  // -----------------------------
-  // Fetch doctor's appointments
-  // -----------------------------
-  const fetchAppointments = async () => {
-    try {
-      setLoading(true);
-
-      const res = await axios.get("/appointments/doctor");
-
-      setAppointments(res.data);
-      setError("");
-    } catch (err) {
-      setError(
-        err.response?.data?.message ||
-          "Failed to load appointments."
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Load appointments once
-  useEffect(() => {
-    fetchAppointments();
-  }, []);
-
-  // -----------------------------
-  // Update appointment status
-  // -----------------------------
-  const handleUpdateStatus = async (appointmentId, newStatus) => {
-    // Prevent multiple clicks
-    if (updatingId) return;
-
-    try {
-      setUpdatingId(appointmentId);
-
-      await axios.put(`/appointments/${appointmentId}`, {
-        status: newStatus,
-      });
-
-      toast.success(
-        `Appointment ${newStatus} successfully.`
-      );
-
-      // Update local state instead of making another API call
-      setAppointments((previousAppointments) =>
-        previousAppointments.map((appointment) =>
-          appointment._id === appointmentId
-            ? { ...appointment, status: newStatus }
-            : appointment
-        )
-      );
-    } catch (err) {
-      toast.error(
-        err.response?.data?.message ||
-          "Failed to update appointment."
-      );
-    } finally {
-      setUpdatingId(null);
-    }
-  };
+  const { appointments, loading, error, updatingId, handleUpdateStatus } =
+    useManageAppointments();
 
   // -----------------------------
   // Render action buttons
@@ -93,12 +22,7 @@ const ManageAppointments = () => {
         return (
           <>
             <button
-              onClick={() =>
-                handleUpdateStatus(
-                  appointment._id,
-                  "confirmed"
-                )
-              }
+              onClick={() => handleUpdateStatus(appointment._id, "confirmed")}
               disabled={updatingId === appointment._id}
               className="text-green-600 hover:underline disabled:opacity-50"
             >
@@ -106,12 +30,7 @@ const ManageAppointments = () => {
             </button>
 
             <button
-              onClick={() =>
-                handleUpdateStatus(
-                  appointment._id,
-                  "cancelled"
-                )
-              }
+              onClick={() => handleUpdateStatus(appointment._id, "cancelled")}
               disabled={updatingId === appointment._id}
               className="text-red-600 hover:underline disabled:opacity-50 ml-3"
             >
@@ -124,12 +43,7 @@ const ManageAppointments = () => {
         return (
           <>
             <button
-              onClick={() =>
-                handleUpdateStatus(
-                  appointment._id,
-                  "completed"
-                )
-              }
+              onClick={() => handleUpdateStatus(appointment._id, "completed")}
               disabled={updatingId === appointment._id}
               className="text-blue-600 hover:underline disabled:opacity-50"
             >
@@ -137,12 +51,7 @@ const ManageAppointments = () => {
             </button>
 
             <button
-              onClick={() =>
-                handleUpdateStatus(
-                  appointment._id,
-                  "cancelled"
-                )
-              }
+              onClick={() => handleUpdateStatus(appointment._id, "cancelled")}
               disabled={updatingId === appointment._id}
               className="text-red-600 hover:underline disabled:opacity-50 ml-3"
             >
@@ -152,11 +61,7 @@ const ManageAppointments = () => {
         );
 
       default:
-        return (
-          <span className="text-gray-400">
-            No actions
-          </span>
-        );
+        return <span className="text-gray-400">No actions</span>;
     }
   };
 
@@ -176,9 +81,7 @@ const ManageAppointments = () => {
   // -----------------------------
   if (error) {
     return (
-      <div className="px-4 py-10 text-center text-red-500">
-        {error}
-      </div>
+      <div className="px-4 py-10 text-center text-red-500">{error}</div>
     );
   }
 
@@ -210,21 +113,14 @@ const ManageAppointments = () => {
 
               <tbody>
                 {appointments.map((appointment) => (
-                  <tr
-                    key={appointment._id}
-                    className="border-t border-gray-100"
-                  >
+                  <tr key={appointment._id} className="border-t border-gray-100">
                     <td className="px-6 py-3">
                       {appointment.patientId?.name || "N/A"}
                     </td>
 
-                    <td className="px-6 py-3">
-                      {appointment.date}
-                    </td>
+                    <td className="px-6 py-3">{appointment.date}</td>
 
-                    <td className="px-6 py-3">
-                      {appointment.timeSlot}
-                    </td>
+                    <td className="px-6 py-3">{appointment.timeSlot}</td>
 
                     <td className="px-6 py-3 max-w-[180px] truncate">
                       {appointment.reason || "-"}
