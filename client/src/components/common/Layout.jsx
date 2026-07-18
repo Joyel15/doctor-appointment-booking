@@ -5,7 +5,7 @@ import Footer from "./Footer.jsx";
 // Includes a navbar, main content area, and footer
 const Layout = ({ children }) => {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-gradient-to-b from-blue-100 to-blue-200">
 
       {/* Top navigation bar */}
       <Navbar />
