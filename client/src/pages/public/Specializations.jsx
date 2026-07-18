@@ -80,7 +80,7 @@ const Specializations = () => {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="e.g. chest pain, skin rash, fever..."
-          className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full border border-gray-300 bg-neutral-50 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
 
@@ -90,7 +90,7 @@ const Specializations = () => {
           <button
             key={term}
             onClick={() => setSearch(term)}
-            className="text-xs bg-blue-50 text-blue-700 border border-blue-200 px-3 py-1.5 rounded-full hover:bg-blue-100 transition"
+            className="text-xs bg-neutral-50 text-blue-700 border border-blue-200 px-3 py-1.5 rounded-full hover:bg-neutral-100 transition"
           >
             {term}
           </button>

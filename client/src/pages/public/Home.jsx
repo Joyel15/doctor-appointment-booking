@@ -40,7 +40,7 @@ const Home = () => {
   return (
     <div>
       {/* ================= HERO SECTION ================= */}
-      <section className="bg-blue-50 px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+      <section className="bg-white/90 px-4 sm:px-6 lg:px-8 py-16 sm:py-24 rounded-2xl">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
             Find the Right Doctor, Right When You Need Them
@@ -86,7 +86,7 @@ const Home = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="w-12 h-12 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 font-bold text-lg mx-auto mb-4">
+              <div className="w-12 h-12 flex items-center justify-center rounded-full bg-white/90 text-blue-600 font-bold text-lg mx-auto mb-4">
                 1
               </div>
               <h3 className="font-semibold text-lg mb-2">Register</h3>
@@ -96,7 +96,7 @@ const Home = () => {
             </div>
 
             <div className="text-center">
-              <div className="w-12 h-12 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 font-bold text-lg mx-auto mb-4">
+              <div className="w-12 h-12 flex items-center justify-center rounded-full bg-white/90 text-blue-600 font-bold text-lg mx-auto mb-4">
                 2
               </div>
               <h3 className="font-semibold text-lg mb-2">Find a Doctor</h3>
@@ -106,7 +106,7 @@ const Home = () => {
             </div>
 
             <div className="text-center">
-              <div className="w-12 h-12 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 font-bold text-lg mx-auto mb-4">
+              <div className="w-12 h-12 flex items-center justify-center rounded-full bg-white/90 text-blue-600 font-bold text-lg mx-auto mb-4">
                 3
               </div>
               <h3 className="font-semibold text-lg mb-2">Book Appointment</h3>
@@ -119,7 +119,7 @@ const Home = () => {
       </section>
 
       {/* ================= FEATURED DOCTORS ================= */}
-      <section className="bg-gray-50 px-4 sm:px-6 lg:px-8 py-16">
+      <section className="bg-white/90 px-4 sm:px-6 lg:px-8 py-16 rounded-2xl">
         <div className="max-w-5xl mx-auto">
           <h2 className="text-2xl sm:text-3xl font-bold text-center text-gray-900 mb-12">
             Featured Doctors

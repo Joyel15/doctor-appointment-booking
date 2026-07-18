@@ -1,12 +1,23 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaBars, FaTimes, FaUserCircle } from "react-icons/fa";
 import { useAuth } from "../../context/AuthContext.jsx";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+
+  // Track scroll position to toggle navbar background
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const getDashboardLink = () => {
     switch (user?.role) {
@@ -26,7 +37,13 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="sticky top-0 z-50 bg-white shadow-sm">
+    <nav
+      className={`sticky top-0 z-50 transition-all duration-300 ${
+        scrolled
+          ? "bg-white/70 backdrop-blur-md shadow-sm"
+          : "bg-white backdrop-blur-sm"
+      }`}
+    >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
 
@@ -103,16 +120,16 @@ const Navbar = () => {
 
         {/* Mobile Navigation */}
         {menuOpen && (
-          <div id="mobile-menu" className="flex flex-col gap-3 pb-4 md:hidden">
-            <Link to="/" onClick={closeMenu} className="py-1 text-gray-700 hover:text-blue-600 transition-colors">
+          <div id="mobile-menu" className="flex flex-col gap-3 pb-4 md:hidden bg-white/90 backdrop-blur-md rounded-b-xl">
+            <Link to="/" onClick={closeMenu} className="py-1 px-2 text-gray-700 hover:text-blue-600 transition-colors">
               Home
             </Link>
 
-            <Link to="/doctors" onClick={closeMenu} className="py-1 text-gray-700 hover:text-blue-600 transition-colors">
+            <Link to="/doctors" onClick={closeMenu} className="py-1 px-2 text-gray-700 hover:text-blue-600 transition-colors">
               Doctors
             </Link>
 
-            <Link to="/specializations" className="text-gray-700 hover:text-blue-600 transition-colors">
+            <Link to="/specializations" onClick={closeMenu} className="py-1 px-2 text-gray-700 hover:text-blue-600 transition-colors">
               Specializations
             </Link>
 
@@ -123,7 +140,7 @@ const Navbar = () => {
                   <Link
                     to="/patient/apply-doctor"
                     onClick={closeMenu}
-                    className="py-1 text-gray-700 hover:text-blue-600 transition-colors"
+                    className="py-1 px-2 text-gray-700 hover:text-blue-600 transition-colors"
                   >
                     Become a Doctor
                   </Link>
@@ -133,7 +150,7 @@ const Navbar = () => {
                 <Link
                   to={getDashboardLink()}
                   onClick={closeMenu}
-                  className="flex items-center gap-2 py-1 text-gray-700 hover:text-blue-600 transition-colors"
+                  className="flex items-center gap-2 py-1 px-2 text-gray-700 hover:text-blue-600 transition-colors"
                 >
                   <FaUserCircle className="text-lg" />
                   <span className="text-sm">Hi, {user.name}</span>
@@ -141,17 +158,17 @@ const Navbar = () => {
 
                 <button
                   onClick={handleLogout}
-                  className="rounded-lg bg-red-500 px-4 py-2 text-left text-sm text-white transition-colors hover:bg-red-600"
+                  className="rounded-lg bg-red-500 px-4 py-2 mx-2 text-left text-sm text-white transition-colors hover:bg-red-600"
                 >
                   Logout
                 </button>
               </>
             ) : (
               <>
-                <Link to="/login" onClick={closeMenu} className="py-1 text-gray-700 hover:text-blue-600 transition-colors">
+                <Link to="/login" onClick={closeMenu} className="py-1 px-2 text-gray-700 hover:text-blue-600 transition-colors">
                   Login
                 </Link>
-                <Link to="/register" onClick={closeMenu} className="inline-block w-fit rounded-lg bg-blue-600 px-4 py-2 text-sm text-white transition-colors hover:bg-blue-700">
+                <Link to="/register" onClick={closeMenu} className="inline-block w-fit rounded-lg bg-blue-600 px-4 py-2 mx-2 text-sm text-white transition-colors hover:bg-blue-700">
                   Register
                 </Link>
               </>
