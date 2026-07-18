@@ -2,10 +2,12 @@ import { useState, useEffect } from "react";
 import axios from "../../api/axios.js";
 import Spinner from "../../components/common/Spinner.jsx";
 import DoctorCard from "../../components/doctor/DoctorCard.jsx";
+import { useSearchParams } from "react-router-dom";
 
 const Doctors = () => {
   const [doctors, setDoctors] = useState([]);
-  const [search, setSearch] = useState("");
+  const [searchParams] = useSearchParams();
+  const [search, setSearch] = useState(searchParams.get("specialization") || "");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 

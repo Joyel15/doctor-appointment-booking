@@ -45,6 +45,10 @@ const Navbar = () => {
               Doctors
             </Link>
 
+            <Link to="/specializations" className="text-gray-700 hover:text-blue-600 transition-colors">
+              Specializations
+            </Link>
+
             {user ? (
               <>
                 {/* Only show for patients */}
@@ -106,6 +110,10 @@ const Navbar = () => {
 
             <Link to="/doctors" onClick={closeMenu} className="py-1 text-gray-700 hover:text-blue-600 transition-colors">
               Doctors
+            </Link>
+
+            <Link to="/specializations" className="text-gray-700 hover:text-blue-600 transition-colors">
+              Specializations
             </Link>
 
             {user ? (

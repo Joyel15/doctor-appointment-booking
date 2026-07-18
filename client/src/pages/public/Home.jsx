@@ -66,6 +66,14 @@ const Home = () => {
               Register
             </Link>
           </div>
+          
+          <p className="text-sm text-gray-500 mt-4">
+            Not sure which specialist you need?{" "}
+            <Link to="/specializations" className="text-blue-600 hover:underline">
+              Browse by symptom
+            </Link>
+          </p>
+
         </div>
       </section>
 

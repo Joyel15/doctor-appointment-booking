@@ -13,6 +13,7 @@ import Doctors from "./pages/public/Doctors.jsx";
 import DoctorProfile from "./pages/public/DoctorProfile.jsx";
 import Unauthorized from "./pages/public/Unauthorized.jsx";
 import NotFound from "./pages/public/NotFound.jsx";
+import Specializations from "./pages/public/Specializations.jsx";
 
 // ---------- Patient Pages ----------
 import PatientDashboard from "./pages/patient/Dashboard.jsx";
@@ -93,6 +94,15 @@ function App() {
             element={
               <Layout>
                 <Unauthorized />
+              </Layout>
+            }
+          />
+
+          <Route
+            path="/specializations"
+            element={
+              <Layout>
+                <Specializations />
               </Layout>
             }
           />
