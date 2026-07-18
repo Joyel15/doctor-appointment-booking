@@ -1,10 +1,7 @@
-import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { toast } from "sonner";
-import axios from "../../api/axios.js";
 import Spinner from "../../components/common/Spinner.jsx";
+import useMyAppointments from "../../hooks/useMyAppointments.js";
 
-// Badge colors for different appointment statuses
 const statusStyles = {
   pending: "bg-yellow-100 text-yellow-700",
   confirmed: "bg-green-100 text-green-700",
@@ -19,95 +16,26 @@ const canCancelAppointment = (status) =>
   ["pending", "confirmed"].includes(status);
 
 const MyAppointments = () => {
-  const [appointments, setAppointments] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [cancellingId, setCancellingId] = useState(null);
-
-  // Review modal state
-  const [reviewModal, setReviewModal] = useState(null);
-  const [reviewData, setReviewData] = useState({ rating: 5, comment: "" });
-  const [submittingReview, setSubmittingReview] = useState(false);
-
-  const fetchAppointments = async () => {
-    try {
-      setLoading(true);
-      setError("");
-      const res = await axios.get("/appointments/patient");
-      setAppointments(res.data);
-    } catch (err) {
-      setError(
-        err.response?.data?.message || "Failed to load your appointments."
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchAppointments();
-  }, []);
-
-  const handleCancel = async (appointmentId) => {
-    const confirmCancel = window.confirm(
-      "Are you sure you want to cancel this appointment?"
-    );
-    if (!confirmCancel) return;
-
-    try {
-      setCancellingId(appointmentId);
-      await axios.put(`/appointments/${appointmentId}`, {
-        status: "cancelled",
-      });
-      toast.success("Appointment cancelled successfully.");
-      setAppointments((prev) =>
-        prev.map((appointment) =>
-          appointment._id === appointmentId
-            ? { ...appointment, status: "cancelled" }
-            : appointment
-        )
-      );
-    } catch (err) {
-      toast.error(
-        err.response?.data?.message || "Failed to cancel appointment."
-      );
-    } finally {
-      setCancellingId(null);
-    }
-  };
-
-  const handleSubmitReview = async () => {
-    try {
-      setSubmittingReview(true);
-      await axios.post("/reviews", {
-        appointmentId: reviewModal._id,
-        rating: reviewData.rating,
-        comment: reviewData.comment,
-      });
-      toast.success("Review submitted successfully!");
-      setReviewModal(null);
-      setReviewData({ rating: 5, comment: "" });
-    } catch (err) {
-      toast.error(
-        err.response?.data?.message || "Failed to submit review."
-      );
-    } finally {
-      setSubmittingReview(false);
-    }
-  };
+  const {
+    appointments,
+    loading,
+    error,
+    cancellingId,
+    reviewModal,
+    setReviewModal,
+    reviewData,
+    setReviewData,
+    submittingReview,
+    handleCancel,
+    handleSubmitReview,
+  } = useMyAppointments();
 
   if (loading) {
-    return (
-      <div className="px-4 py-10">
-        <Spinner />
-      </div>
-    );
+    return <div className="px-4 py-10"><Spinner /></div>;
   }
 
   if (error) {
-    return (
-      <div className="px-4 py-10 text-center text-red-500">{error}</div>
-    );
+    return <div className="px-4 py-10 text-center text-red-500">{error}</div>;
   }
 
   return (
@@ -154,19 +82,15 @@ const MyAppointments = () => {
                         ? `Dr. ${appointment.doctorId.doctorId.name}`
                         : appointment.doctorId?.specialization || "N/A"}
                     </td>
-
                     <td className="px-6 py-3 whitespace-nowrap">
                       {appointment.date}
                     </td>
-
                     <td className="px-6 py-3 whitespace-nowrap">
                       {appointment.timeSlot}
                     </td>
-
                     <td className="px-6 py-3 max-w-[180px] truncate">
                       {appointment.reason?.trim() || "-"}
                     </td>
-
                     <td className="px-6 py-3 whitespace-nowrap">
                       <span
                         className={`px-2.5 py-1 rounded-full text-xs font-medium ${getStatusStyle(
@@ -176,9 +100,7 @@ const MyAppointments = () => {
                         {appointment.status}
                       </span>
                     </td>
-
                     <td className="px-6 py-3 whitespace-nowrap">
-                      {/* Cancel button */}
                       {canCancelAppointment(appointment.status) && (
                         <button
                           onClick={() => handleCancel(appointment._id)}
@@ -190,8 +112,6 @@ const MyAppointments = () => {
                             : "Cancel"}
                         </button>
                       )}
-
-                      {/* Write Review button */}
                       {appointment.status === "completed" && (
                         <button
                           onClick={() => setReviewModal(appointment)}
@@ -215,11 +135,8 @@ const MyAppointments = () => {
           <div className="bg-white rounded-xl p-6 w-full max-w-md">
             <h2 className="text-lg font-semibold mb-4">Write a Review</h2>
 
-            {/* Star Rating */}
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-2">
-                Rating
-              </label>
+              <label className="block text-sm font-medium mb-2">Rating</label>
               <div className="flex gap-2">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <button
@@ -240,7 +157,6 @@ const MyAppointments = () => {
               </div>
             </div>
 
-            {/* Comment */}
             <div className="mb-6">
               <label className="block text-sm font-medium mb-2">
                 Comment (optional)
@@ -259,7 +175,6 @@ const MyAppointments = () => {
               />
             </div>
 
-            {/* Buttons */}
             <div className="flex gap-3">
               <button
                 onClick={handleSubmitReview}
@@ -268,7 +183,6 @@ const MyAppointments = () => {
               >
                 {submittingReview ? "Submitting..." : "Submit Review"}
               </button>
-
               <button
                 onClick={() => {
                   setReviewModal(null);
