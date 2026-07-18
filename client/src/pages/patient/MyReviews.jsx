@@ -1,100 +1,30 @@
-import { useState, useEffect } from "react";
-import { toast } from "sonner";
-import axios from "../../api/axios.js";
 import Spinner from "../../components/common/Spinner.jsx";
+import useMyReviews from "../../hooks/useMyReviews.js";
 
 const MyReviews = () => {
-  const [reviews, setReviews] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [deletingId, setDeletingId] = useState(null);
-
-  const [editModal, setEditModal] = useState(null); // holds the review being edited, or null
-  const [editRating, setEditRating] = useState(5);
-  const [editComment, setEditComment] = useState("");
-  const [savingEdit, setSavingEdit] = useState(false);
-
-  const fetchReviews = async () => {
-    try {
-      const res = await axios.get("/reviews/my");
-      setReviews(res.data);
-    } catch (err) {
-      setError("Failed to load your reviews. Please try again later.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchReviews();
-  }, []);
-
-  const handleDelete = async (id) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this review?"
-    );
-    if (!confirmed) return;
-
-    setDeletingId(id);
-    try {
-      await axios.delete(`/reviews/${id}`);
-      toast.success("Review deleted");
-      setReviews((prev) => prev.filter((r) => r._id !== id));
-    } catch (err) {
-      const message =
-        err.response?.data?.message || "Failed to delete review";
-      toast.error(message);
-    } finally {
-      setDeletingId(null);
-    }
-  };
-
-  const openEditModal = (review) => {
-    setEditModal(review);
-    setEditRating(review.rating);
-    setEditComment(review.comment || "");
-  };
-
-  const closeEditModal = () => {
-    setEditModal(null);
-  };
-
-  const handleSaveEdit = async () => {
-    setSavingEdit(true);
-    try {
-      const res = await axios.put(`/reviews/${editModal._id}`, {
-        rating: editRating,
-        comment: editComment,
-      });
-
-      toast.success("Review updated");
-
-      setReviews((prev) =>
-        prev.map((r) => (r._id === editModal._id ? res.data.review : r))
-      );
-
-      closeEditModal();
-    } catch (err) {
-      const message =
-        err.response?.data?.message || "Failed to update review";
-      toast.error(message);
-    } finally {
-      setSavingEdit(false);
-    }
-  };
+  const {
+    reviews,
+    loading,
+    error,
+    deletingId,
+    editModal,
+    editRating,
+    setEditRating,
+    editComment,
+    setEditComment,
+    savingEdit,
+    handleDelete,
+    openEditModal,
+    closeEditModal,
+    handleSaveEdit,
+  } = useMyReviews();
 
   if (loading) {
-    return (
-      <div className="px-4 py-10">
-        <Spinner />
-      </div>
-    );
+    return <div className="px-4 py-10"><Spinner /></div>;
   }
 
   if (error) {
-    return (
-      <div className="px-4 py-10 text-center text-red-500">{error}</div>
-    );
+    return <div className="px-4 py-10 text-center text-red-500">{error}</div>;
   }
 
   return (
@@ -110,10 +40,7 @@ const MyReviews = () => {
       ) : (
         <div className="space-y-4">
           {reviews.map((review) => (
-            <div
-              key={review._id}
-              className="bg-white rounded-xl shadow-sm p-6"
-            >
+            <div key={review._id} className="bg-white rounded-xl shadow-sm p-6">
               <div className="flex items-start justify-between mb-2">
                 <div>
                   <h3 className="font-semibold text-gray-900">
@@ -153,7 +80,7 @@ const MyReviews = () => {
         </div>
       )}
 
-      {/* Edit modal */}
+      {/* Edit Modal */}
       {editModal && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center px-4 z-50">
           <div className="bg-white rounded-xl shadow-lg w-full max-w-sm p-6">
