@@ -52,6 +52,12 @@ const Dashboard = () => {
       {/* Quick navigation */}
       <div className="flex flex-col sm:flex-row gap-4 mb-10">
         <Link
+          to="/patient/profile"
+          className="bg-white border border-gray-300 text-gray-700 text-center px-6 py-3 rounded-lg font-medium hover:bg-gray-50 transition"
+        >
+          Edit Profile
+        </Link>
+        <Link
           to="/patient/appointments"
           className="bg-blue-600 text-white text-center px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition"
         >
