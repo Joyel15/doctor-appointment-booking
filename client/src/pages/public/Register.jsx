@@ -4,52 +4,55 @@ import { toast } from "sonner";
 import axios from "../../api/axios.js";
 
 const Register = () => {
-  // Store form input values
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
     phone: "",
   });
-
-  // Track registration request status
+  const [profilePic, setProfilePic] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Used to redirect after successful registration
   const navigate = useNavigate();
 
-  // Update the corresponding form field when the user types
   const handleChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Handle registration form submission
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setProfilePic(file);
+    setPreviewUrl(URL.createObjectURL(file));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      // Send registration data to the backend
-      // The backend automatically assigns the "patient" role
-      await axios.post("/auth/register", {
-        name: formData.name.trim(),
-        email: formData.email.trim(),
-        password: formData.password,
-        phone: formData.phone.trim(),
+      // Build multipart form data since we may be sending a file
+      const data = new FormData();
+      data.append("name", formData.name);
+      data.append("email", formData.email);
+      data.append("password", formData.password);
+      data.append("phone", formData.phone);
+
+      if (profilePic) {
+        data.append("profilePic", profilePic);
+      }
+
+      await axios.post("/auth/register", data, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
 
       toast.success("Registration successful! Please login.");
-
-      // Redirect to login page
       navigate("/login");
     } catch (error) {
       const message =
-        error.response?.data?.message ||
-        "Registration failed. Please try again.";
-
+        error.response?.data?.message || "Registration failed. Please try again.";
       toast.error(message);
     } finally {
       setLoading(false);
@@ -59,25 +62,47 @@ const Register = () => {
   return (
     <div className="flex items-center justify-center min-h-[80vh] px-4 py-8">
       <div className="w-full max-w-sm sm:max-w-md bg-white rounded-xl shadow-md p-6 sm:p-8">
-        <h1 className="text-2xl font-semibold text-center mb-2">
+        <h1 className="text-2xl font-semibold text-center mb-6">
           Create Account
         </h1>
 
-        <p className="text-sm text-center text-gray-500 mb-6">
-          All new accounts are created as patients. You can apply to become a
-          doctor after logging in.
-        </p>
-
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Full Name */}
-          <div>
+          {/* Profile picture (optional) */}
+          <div className="flex flex-col items-center mb-2">
+            <label htmlFor="profilePic" className="cursor-pointer">
+              <div className="w-20 h-20 rounded-full bg-gray-100 border border-gray-300 flex items-center justify-center overflow-hidden mb-2">
+                {previewUrl ? (
+                  <img
+                    src={previewUrl}
+                    alt="Preview"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <span className="text-xs text-gray-400 text-center px-2">
+                    Add Photo
+                  </span>
+                )}
+              </div>
+            </label>
+            <input
+              id="profilePic"
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              onChange={handleFileChange}
+              className="hidden"
+            />
             <label
-              htmlFor="name"
-              className="block text-sm font-medium mb-1"
+              htmlFor="profilePic"
+              className="text-xs text-blue-600 hover:underline cursor-pointer"
             >
+              {previewUrl ? "Change photo" : "Upload photo (optional)"}
+            </label>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1" htmlFor="name">
               Full Name
             </label>
-
             <input
               id="name"
               type="text"
@@ -85,21 +110,15 @@ const Register = () => {
               value={formData.name}
               onChange={handleChange}
               required
-              autoComplete="name"
-              placeholder="John Doe"
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="John Doe"
             />
           </div>
 
-          {/* Email */}
           <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium mb-1"
-            >
+            <label className="block text-sm font-medium mb-1" htmlFor="email">
               Email
             </label>
-
             <input
               id="email"
               type="email"
@@ -107,21 +126,18 @@ const Register = () => {
               value={formData.email}
               onChange={handleChange}
               required
-              autoComplete="email"
-              placeholder="you@example.com"
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="you@example.com"
             />
           </div>
 
-          {/* Password */}
           <div>
             <label
-              htmlFor="password"
               className="block text-sm font-medium mb-1"
+              htmlFor="password"
             >
               Password
             </label>
-
             <input
               id="password"
               type="password"
@@ -129,21 +145,15 @@ const Register = () => {
               value={formData.password}
               onChange={handleChange}
               required
-              autoComplete="new-password"
-              placeholder="••••••••"
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="••••••••"
             />
           </div>
 
-          {/* Phone Number */}
           <div>
-            <label
-              htmlFor="phone"
-              className="block text-sm font-medium mb-1"
-            >
-              Phone Number
+            <label className="block text-sm font-medium mb-1" htmlFor="phone">
+              Phone
             </label>
-
             <input
               id="phone"
               type="tel"
@@ -151,29 +161,23 @@ const Register = () => {
               value={formData.phone}
               onChange={handleChange}
               required
-              autoComplete="tel"
-              placeholder="9876543210"
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="9876543210"
             />
           </div>
 
-          {/* Register Button */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 text-white font-medium py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
+            className="w-full bg-blue-600 text-white font-medium py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            {loading ? "Creating Account..." : "Register"}
+            {loading ? "Creating account..." : "Register"}
           </button>
         </form>
 
-        {/* Login Link */}
         <p className="text-sm text-center mt-6 text-gray-600">
           Already have an account?{" "}
-          <Link
-            to="/login"
-            className="text-blue-600 font-medium hover:underline"
-          >
+          <Link to="/login" className="text-blue-600 font-medium hover:underline">
             Login
           </Link>
         </p>
