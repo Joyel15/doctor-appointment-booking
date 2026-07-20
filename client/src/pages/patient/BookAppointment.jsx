@@ -1,132 +1,31 @@
-import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { toast } from "sonner";
-import axios from "../../api/axios.js";
 import Spinner from "../../components/common/Spinner.jsx";
+import useBookAppointment from "../../hooks/useBookAppointment.js";
 
 const BookAppointment = () => {
-  // Doctor id comes from the URL
-  const { doctorId } = useParams();
+  const {
+    doctor,
+    loading,
+    submitting,
+    error,
+    availableSlots,
+    bookedSlots,
+    loadingSlots,
+    formData,
+    setFormData,
+    handleSubmit,
+    allSlotsUnavailable,
+    isSlotInPast,
+    getDayName,
+  } = useBookAppointment();
 
-  // Used to redirect after successful booking
-  const navigate = useNavigate();
-
-  // Stores doctor details
-  const [doctor, setDoctor] = useState(null);
-
-  // Loading states
-  const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
-
-  // Error message while loading doctor details
-  const [error, setError] = useState("");
-
-  // Appointment form
-  const [formData, setFormData] = useState({
-    date: "",
-    timeSlot: "",
-    reason: "",
-  });
-
-  // -----------------------------
-  // Fetch doctor details
-  // -----------------------------
-  const fetchDoctor = async () => {
-    try {
-      setLoading(true);
-
-      const res = await axios.get(`/doctors/${doctorId}`);
-
-      setDoctor(res.data);
-    } catch (err) {
-      setError(
-        err.response?.data?.message ||
-          "Failed to load doctor details. Please try again later."
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Fetch doctor once when page loads
-  useEffect(() => {
-    fetchDoctor();
-  }, [doctorId]);
-
-  // -----------------------------
-  // Update form fields
-  // -----------------------------
-  const handleChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
-
-  // -----------------------------
-  // Submit booking
-  // -----------------------------
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    // Prevent double clicks
-    if (submitting) return;
-
-    // Basic validation
-    if (!formData.date || !formData.timeSlot.trim()) {
-      toast.error("Please fill all required fields.");
-      return;
-    }
-
-    try {
-      setSubmitting(true);
-
-      await axios.post("/appointments/book", {
-        doctorId,
-        date: formData.date,
-        timeSlot: formData.timeSlot.trim(),
-        reason: formData.reason.trim(),
-      });
-
-      toast.success("Appointment booked successfully");
-
-      // Redirect to patient's appointments page
-      navigate("/patient/appointments");
-    } catch (err) {
-      toast.error(
-        err.response?.data?.message ||
-          "Failed to book appointment."
-      );
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  // -----------------------------
-  // Loading state
-  // -----------------------------
   if (loading) {
-    return (
-      <div className="px-4 py-10">
-        <Spinner />
-      </div>
-    );
+    return <div className="px-4 py-10"><Spinner /></div>;
   }
 
-  // -----------------------------
-  // Error state
-  // -----------------------------
   if (error) {
-    return (
-      <div className="px-4 py-10 text-center text-red-500">
-        {error}
-      </div>
-    );
+    return <div className="px-4 py-10 text-center text-red-500">{error}</div>;
   }
 
-  // -----------------------------
-  // Doctor not found
-  // -----------------------------
   if (!doctor) {
     return (
       <div className="px-4 py-10 text-center text-gray-600">
@@ -142,98 +41,191 @@ const BookAppointment = () => {
       </h1>
 
       {/* Doctor information */}
-      <div className="bg-white rounded-xl shadow-sm p-6 mb-8 flex items-center gap-4">
+      <div className="bg-white rounded-xl shadow-sm p-6 mb-6 flex items-center gap-4">
         <div className="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-lg shrink-0">
           {doctor.doctorId?.name?.charAt(0) || "D"}
         </div>
-
         <div>
           <h2 className="font-semibold text-gray-900">
             Dr. {doctor.doctorId?.name}
           </h2>
-
           <p className="text-sm text-gray-500">
             {doctor.specialization} • ₹{doctor.fees}
           </p>
         </div>
       </div>
 
-      {/* Appointment booking form */}
+      {/* Weekly availability reference */}
+      <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
+        <p className="text-sm font-medium text-gray-700 mb-3">
+          Available Days
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map(
+            (day) => {
+              const isAvailable = doctor.availability?.some(
+                (block) => block.day === day
+              );
+              return (
+                <span
+                  key={day}
+                  className={`text-xs px-2.5 py-1 rounded-full font-medium ${
+                    isAvailable
+                      ? "bg-green-100 text-green-700"
+                      : "bg-gray-100 text-gray-400"
+                  }`}
+                >
+                  {day.slice(0, 3)}
+                </span>
+              );
+            }
+          )}
+        </div>
+      </div>
+
+      {/* Booking form */}
       <form
         onSubmit={handleSubmit}
-        className="bg-white rounded-xl shadow-sm p-6 sm:p-8 space-y-4"
+        className="bg-white rounded-xl shadow-sm p-6 sm:p-8 space-y-6"
       >
-        {/* Appointment date */}
+        {/* Date picker */}
         <div>
-          <label
-            htmlFor="date"
-            className="block text-sm font-medium mb-1"
-          >
-            Date
+          <label htmlFor="date" className="block text-sm font-medium mb-1">
+            Select Date
           </label>
-
           <input
             id="date"
             type="date"
             name="date"
             value={formData.date}
-            onChange={handleChange}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, date: e.target.value }))
+            }
             required
             min={new Date().toISOString().split("T")[0]}
             className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
-        {/* Appointment time */}
-        <div>
-          <label
-            htmlFor="timeSlot"
-            className="block text-sm font-medium mb-1"
-          >
-            Time Slot
-          </label>
+        {/* Slot picker */}
+        {formData.date && (
+          <div>
+            <label className="block text-sm font-medium mb-3">
+              Select Time Slot
+            </label>
 
-          <input
-            id="timeSlot"
-            type="text"
-            name="timeSlot"
-            value={formData.timeSlot}
-            onChange={handleChange}
-            required
-            placeholder="e.g. 10:00 AM - 10:30 AM"
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
+            {loadingSlots && (
+              <p className="text-sm text-gray-500">Loading slots...</p>
+            )}
 
-        {/* Optional reason */}
+            {/* No availability on this day */}
+            {!loadingSlots && availableSlots.length === 0 && (
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-sm text-yellow-700">
+                Dr. {doctor.doctorId?.name} is not available on{" "}
+                {getDayName(formData.date)}. Please select a different date.
+              </div>
+            )}
+
+            {/* Slot grid */}
+            {!loadingSlots && availableSlots.length > 0 && (
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                {availableSlots.map((slot) => {
+                  const isBooked = bookedSlots.includes(slot);
+                  const isPast = isSlotInPast(slot, formData.date);
+                  const isDisabled = isBooked || isPast;
+                  const isSelected = formData.timeSlot === slot;
+
+                  return (
+                    <button
+                      key={slot}
+                      type="button"
+                      disabled={isDisabled}
+                      onClick={() =>
+                        !isDisabled &&
+                        setFormData((prev) => ({ ...prev, timeSlot: slot }))
+                      }
+                      className={`
+                        px-3 py-2 rounded-lg text-sm font-medium border transition
+                        ${isBooked
+                          ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed line-through"
+                          : isPast
+                          ? "bg-gray-50 text-gray-300 border-gray-100 cursor-not-allowed"
+                          : isSelected
+                          ? "bg-blue-600 text-white border-blue-600"
+                          : "bg-white text-gray-700 border-gray-300 hover:border-blue-500 hover:text-blue-600"
+                        }
+                      `}
+                    >
+                      {slot}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* All slots unavailable */}
+            {!loadingSlots && allSlotsUnavailable && (
+              <p className="text-sm text-red-500 mt-3">
+                No available slots for this date. Please select a different date.
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Selected slot confirmation */}
+        {formData.timeSlot && (
+          <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 text-sm text-blue-700">
+            Selected slot: <strong>{formData.timeSlot}</strong>
+          </div>
+        )}
+
+        {/* Reason */}
         <div>
-          <label
-            htmlFor="reason"
-            className="block text-sm font-medium mb-1"
-          >
+          <label htmlFor="reason" className="block text-sm font-medium mb-1">
             Reason for Visit (optional)
           </label>
-
           <textarea
             id="reason"
             name="reason"
             rows={4}
             value={formData.reason}
-            onChange={handleChange}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, reason: e.target.value }))
+            }
             placeholder="Briefly describe your symptoms..."
             className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
           />
         </div>
 
-        {/* Submit button */}
+        {/* Submit */}
         <button
           type="submit"
-          disabled={submitting}
+          disabled={submitting || !formData.timeSlot}
           className="w-full bg-blue-600 text-white font-medium py-2.5 rounded-lg hover:bg-blue-700 transition disabled:opacity-60 disabled:cursor-not-allowed"
         >
           {submitting ? "Booking Appointment..." : "Confirm Booking"}
         </button>
       </form>
+
+      {/* Legend */}
+      <div className="flex flex-wrap gap-4 mt-4 text-xs text-gray-500">
+        <div className="flex items-center gap-1">
+          <div className="w-3 h-3 rounded bg-white border border-gray-300"></div>
+          Available
+        </div>
+        <div className="flex items-center gap-1">
+          <div className="w-3 h-3 rounded bg-blue-600"></div>
+          Selected
+        </div>
+        <div className="flex items-center gap-1">
+          <div className="w-3 h-3 rounded bg-gray-100 border border-gray-200"></div>
+          Booked
+        </div>
+        <div className="flex items-center gap-1">
+          <div className="w-3 h-3 rounded bg-gray-50 border border-gray-100"></div>
+          Past
+        </div>
+      </div>
     </div>
   );
 };
