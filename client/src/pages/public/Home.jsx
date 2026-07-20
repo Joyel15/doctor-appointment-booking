@@ -3,6 +3,14 @@ import { Link } from "react-router-dom";
 import axios from "../../api/axios.js";
 import Spinner from "../../components/common/Spinner.jsx";
 import DoctorCard from "../../components/doctor/DoctorCard.jsx";
+import {
+  FaUserMd,
+  FaClock,
+  FaShieldAlt,
+  FaUserPlus,
+  FaSearch,
+  FaCalendarCheck,
+} from "react-icons/fa";
 
 const Home = () => {
   const [doctors, setDoctors] = useState([]);
@@ -38,15 +46,27 @@ const Home = () => {
   }, []);
 
   return (
-    <div>
+    <div className="space-y-8">
       {/* ================= HERO SECTION ================= */}
-      <section className="bg-white/90 px-4 sm:px-6 lg:px-8 py-16 sm:py-24 rounded-2xl">
-        <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+      <section
+        className="relative overflow-hidden rounded-2xl min-h-[480px] sm:min-h-[560px] flex items-center"
+        style={{
+          backgroundImage: "url('/images/doctor1.png')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
+      >
+        {/* Dark overlay for text readability */}
+        <div className="absolute inset-0 bg-black/50"></div>
+
+        {/* Content */}
+        <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center w-full">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
             Find the Right Doctor, Right When You Need Them
           </h1>
 
-          <p className="text-base sm:text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-gray-100 mb-8 max-w-2xl mx-auto">
             Book appointments with trusted doctors in just a few clicks —
             simple, fast, and reliable healthcare booking.
           </p>
@@ -61,19 +81,21 @@ const Home = () => {
 
             <Link
               to="/register"
-              className="w-full sm:w-auto bg-white text-blue-600 border border-blue-600 px-6 py-3 rounded-lg font-medium hover:bg-blue-50 transition text-center"
+              className="w-full sm:w-auto bg-white text-blue-600 px-6 py-3 rounded-lg font-medium hover:bg-blue-50 transition text-center"
             >
               Register
             </Link>
           </div>
-          
-          <p className="text-sm text-gray-500 mt-4">
+
+          <p className="text-sm text-gray-200 mt-4">
             Not sure which specialist you need?{" "}
-            <Link to="/specializations" className="text-blue-600 hover:underline">
+            <Link
+              to="/specializations"
+              className="text-white font-medium hover:underline"
+            >
               Browse by symptom
             </Link>
           </p>
-
         </div>
       </section>
 
@@ -84,42 +106,84 @@ const Home = () => {
             How It Works
           </h2>
 
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 relative">
+            {[
+              {
+                icon: FaUserPlus,
+                step: "1",
+                title: "Register",
+                text: "Create your free account in under a minute.",
+              },
+              {
+                icon: FaSearch,
+                step: "2",
+                title: "Find a Doctor",
+                text: "Browse doctors by specialization and availability.",
+              },
+              {
+                icon: FaCalendarCheck,
+                step: "3",
+                title: "Book Appointment",
+                text: "Pick a slot and confirm — that's it.",
+              },
+            ].map(({ icon: Icon, step, title, text }) => (
+              <div
+                key={step}
+                className="relative text-center bg-white/80 rounded-2xl p-6"
+              >
+                <div className="relative w-16 h-16 flex items-center justify-center rounded-full bg-blue-600 text-white mx-auto mb-4 shadow-md">
+                  <Icon size={22} />
+                  <span className="absolute -top-1 -right-1 w-6 h-6 flex items-center justify-center rounded-full bg-white text-blue-600 text-xs font-bold border-2 border-blue-600">
+                    {step}
+                  </span>
+                </div>
+                <h3 className="font-semibold text-lg mb-2">{title}</h3>
+                <p className="text-gray-600 text-sm">{text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ================= WHY CHOOSE US ================= */}
+      <section className="bg-blue-50/80 px-4 sm:px-6 lg:px-8 py-16 sm:py-24 rounded-2xl">
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-2xl sm:text-3xl font-bold text-center text-gray-900 mb-12">
+            Why Choose Us
+          </h2>
+
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="w-12 h-12 flex items-center justify-center rounded-full bg-white/90 text-blue-600 font-bold text-lg mx-auto mb-4">
-                1
+            {[
+              {
+                icon: FaUserMd,
+                title: "Verified Doctors",
+                text: "Every doctor on our platform is reviewed and approved before being listed.",
+              },
+              {
+                icon: FaClock,
+                title: "Instant Booking",
+                text: "See real-time availability and confirm your appointment in seconds.",
+              },
+              {
+                icon: FaShieldAlt,
+                title: "Secure & Private",
+                text: "Your health information stays protected with us, always.",
+              },
+            ].map(({ icon: Icon, title, text }) => (
+              <div key={title} className="text-center">
+                <div className="w-14 h-14 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 mx-auto mb-4">
+                  <Icon size={24} />
+                </div>
+                <h3 className="font-semibold text-lg mb-2">{title}</h3>
+                <p className="text-gray-600 text-sm">{text}</p>
               </div>
-              <h3 className="font-semibold text-lg mb-2">Register</h3>
-              <p className="text-gray-600 text-sm">
-                Create your free account in under a minute.
-              </p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-12 h-12 flex items-center justify-center rounded-full bg-white/90 text-blue-600 font-bold text-lg mx-auto mb-4">
-                2
-              </div>
-              <h3 className="font-semibold text-lg mb-2">Find a Doctor</h3>
-              <p className="text-gray-600 text-sm">
-                Browse doctors by specialization and availability.
-              </p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-12 h-12 flex items-center justify-center rounded-full bg-white/90 text-blue-600 font-bold text-lg mx-auto mb-4">
-                3
-              </div>
-              <h3 className="font-semibold text-lg mb-2">Book Appointment</h3>
-              <p className="text-gray-600 text-sm">
-                Pick a slot and confirm — that's it.
-              </p>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* ================= FEATURED DOCTORS ================= */}
-      <section className="bg-white/90 px-4 sm:px-6 lg:px-8 py-16 rounded-2xl">
+      <section className="bg-white/80 px-4 sm:px-6 lg:px-8 py-16 rounded-2xl">
         <div className="max-w-5xl mx-auto">
           <h2 className="text-2xl sm:text-3xl font-bold text-center text-gray-900 mb-12">
             Featured Doctors
@@ -157,19 +221,33 @@ const Home = () => {
 
       {/* ================= CALL TO ACTION ================= */}
       <section className="px-4 sm:px-6 lg:px-8 py-16">
-        <div className="max-w-4xl mx-auto bg-blue-600 rounded-2xl text-center px-6 py-12">
-          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
-            Ready to book your appointment?
-          </h2>
-          <p className="text-blue-100 mb-6">
-            Join thousands of patients managing their healthcare with ease.
-          </p>
-          <Link
-            to="/register"
-            className="inline-block bg-white text-blue-600 px-6 py-3 rounded-lg font-medium hover:bg-blue-50 transition"
-          >
-            Get Started
-          </Link>
+        <div className="max-w-4xl mx-auto bg-[#2563EB] rounded-2xl overflow-hidden">
+          <div className="flex flex-col sm:flex-row items-center">
+            {/* Text side */}
+            <div className="flex-1 text-center sm:text-left px-6 py-12 sm:px-10">
+              <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
+                Ready to book your appointment?
+              </h2>
+              <p className="text-blue-100 mb-6">
+                Join thousands of patients managing their healthcare with ease.
+              </p>
+              <Link
+                to="/register"
+                className="inline-block bg-white text-blue-600 px-6 py-3 rounded-lg font-medium hover:bg-blue-50 transition"
+              >
+                Get Started
+              </Link>
+            </div>
+
+            {/* Image side */}
+            <div className="flex-1 hidden sm:flex items-center justify-center p-8">
+              <img
+                src="/images/cta-illustration.png"
+                alt="Book an appointment"
+                className="w-full max-w-[280px] h-auto"
+              />
+            </div>
+          </div>
         </div>
       </section>
     </div>
