@@ -111,7 +111,7 @@ const Register = () => {
               onChange={handleChange}
               required
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="John Doe"
+              placeholder="Enter your name"
             />
           </div>
 
@@ -127,7 +127,7 @@ const Register = () => {
               onChange={handleChange}
               required
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="you@example.com"
+              placeholder="Enter your email"
             />
           </div>
 
@@ -145,8 +145,8 @@ const Register = () => {
               value={formData.password}
               onChange={handleChange}
               required
+              placeholder="Enter password"
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="••••••••"
             />
           </div>
 
@@ -162,7 +162,7 @@ const Register = () => {
               onChange={handleChange}
               required
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="9876543210"
+              placeholder="Enter your phone number"
             />
           </div>
 

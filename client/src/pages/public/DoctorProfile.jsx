@@ -104,12 +104,6 @@ const DoctorProfile = () => {
               {doctor.doctorId?.email}
             </p>
           </div>
-          <div>
-            <p className="text-sm text-gray-500">Phone</p>
-            <p className="font-medium text-gray-900">
-              {doctor.doctorId?.phone}
-            </p>
-          </div>
         </div>
 
         {/* Bio */}
