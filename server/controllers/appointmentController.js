@@ -126,7 +126,7 @@ export const getDoctorAppointments = async (req, res) => {
   }
 };
 
-// Update appointment status (doctor confirms/cancels/completes)
+// Update appointment status (doctor confirms/completes/cancels, or patient cancels)
 export const updateAppointmentStatus = async (req, res) => {
   try {
     // Get appointment ID from URL parameters
@@ -145,16 +145,6 @@ export const updateAppointmentStatus = async (req, res) => {
       });
     }
 
-    // Find the doctor's profile using the logged-in user's ID
-    // (req.user.id refers to the User document)
-    const doctor = await Doctor.findOne({ doctorId: req.user.id });
-
-    if (!doctor) {
-      return res.status(404).json({
-        message: "Doctor profile not found",
-      });
-    }
-
     // Find the appointment
     const appointment = await Appointment.findById(id);
 
@@ -165,8 +155,42 @@ export const updateAppointmentStatus = async (req, res) => {
       });
     }
 
-    // Ensure the appointment belongs to this doctor
-    if (appointment.doctorId.toString() !== doctor._id.toString()) {
+    const userRole = req.user.role;
+    const userId = req.user.id;
+
+    if (userRole === "patient") {
+      // Patients can only cancel their own appointment
+      if (appointment.patientId.toString() !== userId) {
+        return res.status(403).json({
+          message: "Not authorized to update this appointment",
+        });
+      }
+
+      if (status !== "cancelled") {
+        return res.status(403).json({
+          message: "Patients can only cancel appointments",
+        });
+      }
+    } else if (userRole === "doctor") {
+      // Find the doctor's profile using the logged-in user's ID
+      // (req.user.id refers to the User document)
+      const doctor = await Doctor.findOne({ doctorId: userId });
+
+      if (!doctor) {
+        return res.status(404).json({
+          message: "Doctor profile not found",
+        });
+      }
+
+      // Ensure the appointment belongs to this doctor
+      if (appointment.doctorId.toString() !== doctor._id.toString()) {
+        return res.status(403).json({
+          message: "Not authorized to update this appointment",
+        });
+      }
+    } else {
+      // Any other role shouldn't reach here given roleMiddleware,
+      // but guard against it anyway
       return res.status(403).json({
         message: "Not authorized to update this appointment",
       });
@@ -197,7 +221,6 @@ export const updateAppointmentStatus = async (req, res) => {
     });
   }
 };
-
 
 // Bookedslots 
 export const getBookedSlots = async (req, res) => {

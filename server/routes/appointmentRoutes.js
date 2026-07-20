@@ -37,11 +37,11 @@
     getDoctorAppointments
   );
 
-  // Allow a doctor to update the status of one of their appointments
+  // Allow patient and doctor to update the status of one of their appointments
   router.put(
     "/:id",
     authMiddleware,
-    roleMiddleware("doctor"),
+    roleMiddleware("patient","doctor"),
     updateAppointmentStatus
   );
 
