@@ -197,3 +197,30 @@ export const updateAppointmentStatus = async (req, res) => {
     });
   }
 };
+
+
+// Bookedslots 
+export const getBookedSlots = async (req, res) => {
+  try {
+    const { doctorId } = req.params;
+    const { date } = req.query;
+
+    if (!date) {
+      return res.status(400).json({ message: "Date is required" });
+    }
+
+    // Find all non-cancelled appointments for this doctor on this date
+    const appointments = await Appointment.find({
+      doctorId,
+      date,
+      status: { $ne: "cancelled" },
+    });
+
+    // Return only the booked time slots
+    const bookedSlots = appointments.map((a) => a.timeSlot);
+
+    res.status(200).json({ bookedSlots });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};

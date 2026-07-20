@@ -4,6 +4,7 @@
     getPatientAppointments,
     getDoctorAppointments,
     updateAppointmentStatus,
+    getBookedSlots,
   } from "../controllers/appointmentController.js";
 
   import authMiddleware from "../middleware/authMiddleware.js";
@@ -43,5 +44,8 @@
     roleMiddleware("doctor"),
     updateAppointmentStatus
   );
+
+  // Get booked slots for a doctor on a specific date (public)
+  router.get("/slots/:doctorId", getBookedSlots);
 
   export default router;
