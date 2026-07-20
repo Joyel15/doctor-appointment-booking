@@ -28,11 +28,6 @@ const useMyReviews = () => {
   }, []);
 
   const handleDelete = async (id) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this review?"
-    );
-    if (!confirmed) return;
-
     setDeletingId(id);
     try {
       await axios.delete(`/reviews/${id}`);

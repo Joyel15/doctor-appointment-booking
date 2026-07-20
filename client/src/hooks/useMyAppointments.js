@@ -31,11 +31,6 @@ const useMyAppointments = () => {
   }, []);
 
   const handleCancel = async (appointmentId) => {
-    const confirmCancel = window.confirm(
-      "Are you sure you want to cancel this appointment?"
-    );
-    if (!confirmCancel) return;
-
     try {
       setCancellingId(appointmentId);
       await axios.put(`/appointments/${appointmentId}`, {
@@ -62,6 +57,7 @@ const useMyAppointments = () => {
     try {
       setSubmittingReview(true);
       await axios.post("/reviews", {
+        doctorId: reviewModal.doctorId?._id,
         appointmentId: reviewModal._id,
         rating: reviewData.rating,
         comment: reviewData.comment,

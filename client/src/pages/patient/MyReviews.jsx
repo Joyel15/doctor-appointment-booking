@@ -1,4 +1,6 @@
+import { useState } from "react";
 import Spinner from "../../components/common/Spinner.jsx";
+import ConfirmModal from "../../components/common/ConfirmModal.jsx";
 import useMyReviews from "../../hooks/useMyReviews.js";
 
 const MyReviews = () => {
@@ -18,6 +20,14 @@ const MyReviews = () => {
     closeEditModal,
     handleSaveEdit,
   } = useMyReviews();
+
+  // Tracks which review is pending delete confirmation
+  const [reviewToDelete, setReviewToDelete] = useState(null);
+
+  const confirmDelete = () => {
+    handleDelete(reviewToDelete);
+    setReviewToDelete(null);
+  };
 
   if (loading) {
     return <div className="px-4 py-10"><Spinner /></div>;
@@ -58,7 +68,7 @@ const MyReviews = () => {
                     Edit
                   </button>
                   <button
-                    onClick={() => handleDelete(review._id)}
+                    onClick={() => setReviewToDelete(review._id)}
                     disabled={deletingId === review._id}
                     className="text-red-600 font-medium hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
                   >
@@ -140,6 +150,16 @@ const MyReviews = () => {
           </div>
         </div>
       )}
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmModal
+        isOpen={!!reviewToDelete}
+        title="Delete Review"
+        message="Are you sure you want to delete this review? This action cannot be undone."
+        confirmText="Delete"
+        onConfirm={confirmDelete}
+        onCancel={() => setReviewToDelete(null)}
+      />
     </div>
   );
 };

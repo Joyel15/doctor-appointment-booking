@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import Spinner from "../../components/common/Spinner.jsx";
+import ConfirmModal from "../../components/common/ConfirmModal.jsx";
 import useMyAppointments from "../../hooks/useMyAppointments.js";
 
 const statusStyles = {
@@ -29,6 +31,14 @@ const MyAppointments = () => {
     handleCancel,
     handleSubmitReview,
   } = useMyAppointments();
+
+  // Tracks which appointment is pending cancel confirmation
+  const [appointmentToCancel, setAppointmentToCancel] = useState(null);
+
+  const confirmCancel = () => {
+    handleCancel(appointmentToCancel);
+    setAppointmentToCancel(null);
+  };
 
   if (loading) {
     return <div className="px-4 py-10"><Spinner /></div>;
@@ -103,7 +113,7 @@ const MyAppointments = () => {
                     <td className="px-6 py-3 whitespace-nowrap">
                       {canCancelAppointment(appointment.status) && (
                         <button
-                          onClick={() => handleCancel(appointment._id)}
+                          onClick={() => setAppointmentToCancel(appointment._id)}
                           disabled={cancellingId === appointment._id}
                           className="text-red-600 font-medium hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
                         >
@@ -196,6 +206,17 @@ const MyAppointments = () => {
           </div>
         </div>
       )}
+
+      {/* Cancel Confirmation Modal */}
+      <ConfirmModal
+        isOpen={!!appointmentToCancel}
+        title="Cancel Appointment"
+        message="Are you sure you want to cancel this appointment? This action cannot be undone."
+        confirmText="Yes, Cancel"
+        cancelText="No, Keep It"
+        onConfirm={confirmCancel}
+        onCancel={() => setAppointmentToCancel(null)}
+      />
     </div>
   );
 };

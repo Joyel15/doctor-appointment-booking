@@ -21,10 +21,14 @@ const Navbar = () => {
 
   const getDashboardLink = () => {
     switch (user?.role) {
-      case "patient": return "/patient/dashboard";
-      case "doctor": return "/doctor/dashboard";
-      case "admin": return "/admin/dashboard";
-      default: return "/";
+      case "patient":
+        return "/patient/dashboard";
+      case "doctor":
+        return "/doctor/dashboard";
+      case "admin":
+        return "/admin/dashboard";
+      default:
+        return "/";
     }
   };
 
@@ -46,23 +50,28 @@ const Navbar = () => {
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
-
           {/* Logo */}
-          <Link to="/" onClick={closeMenu} className="text-xl font-bold text-blue-600">
+          <Link
+            to="/"
+            onClick={closeMenu}
+            className="text-xl font-bold text-blue-600"
+          >
             MediBook
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-6">
-            <Link to="/" className="text-gray-700 hover:text-blue-600 transition-colors">
-              Home
-            </Link>
-
-            <Link to="/doctors" className="text-gray-700 hover:text-blue-600 transition-colors">
+            <Link
+              to="/doctors"
+              className="text-gray-700 hover:text-blue-600 transition-colors"
+            >
               Doctors
             </Link>
 
-            <Link to="/specializations" className="text-gray-700 hover:text-blue-600 transition-colors">
+            <Link
+              to="/specializations"
+              className="text-gray-700 hover:text-blue-600 transition-colors"
+            >
               Specializations
             </Link>
 
@@ -96,10 +105,16 @@ const Navbar = () => {
               </>
             ) : (
               <>
-                <Link to="/login" className="text-gray-700 hover:text-blue-600 transition-colors">
+                <Link
+                  to="/login"
+                  className="text-gray-700 hover:text-blue-600 transition-colors"
+                >
                   Login
                 </Link>
-                <Link to="/register" className="rounded-lg bg-blue-600 px-4 py-1.5 text-sm text-white transition-colors hover:bg-blue-700">
+                <Link
+                  to="/register"
+                  className="rounded-lg bg-blue-600 px-4 py-1.5 text-sm text-white transition-colors hover:bg-blue-700"
+                >
                   Register
                 </Link>
               </>
@@ -120,16 +135,31 @@ const Navbar = () => {
 
         {/* Mobile Navigation */}
         {menuOpen && (
-          <div id="mobile-menu" className="flex flex-col gap-3 pb-4 md:hidden bg-white/90 backdrop-blur-md rounded-b-xl">
-            <Link to="/" onClick={closeMenu} className="py-1 px-2 text-gray-700 hover:text-blue-600 transition-colors">
+          <div
+            id="mobile-menu"
+            className="flex flex-col gap-3 pb-4 md:hidden bg-white/90 backdrop-blur-md rounded-b-xl"
+          >
+            <Link
+              to="/"
+              onClick={closeMenu}
+              className="py-1 px-2 text-gray-700 hover:text-blue-600 transition-colors"
+            >
               Home
             </Link>
 
-            <Link to="/doctors" onClick={closeMenu} className="py-1 px-2 text-gray-700 hover:text-blue-600 transition-colors">
+            <Link
+              to="/doctors"
+              onClick={closeMenu}
+              className="py-1 px-2 text-gray-700 hover:text-blue-600 transition-colors"
+            >
               Doctors
             </Link>
 
-            <Link to="/specializations" onClick={closeMenu} className="py-1 px-2 text-gray-700 hover:text-blue-600 transition-colors">
+            <Link
+              to="/specializations"
+              onClick={closeMenu}
+              className="py-1 px-2 text-gray-700 hover:text-blue-600 transition-colors"
+            >
               Specializations
             </Link>
 
@@ -165,10 +195,18 @@ const Navbar = () => {
               </>
             ) : (
               <>
-                <Link to="/login" onClick={closeMenu} className="py-1 px-2 text-gray-700 hover:text-blue-600 transition-colors">
+                <Link
+                  to="/login"
+                  onClick={closeMenu}
+                  className="py-1 px-2 text-gray-700 hover:text-blue-600 transition-colors"
+                >
                   Login
                 </Link>
-                <Link to="/register" onClick={closeMenu} className="inline-block w-fit rounded-lg bg-blue-600 px-4 py-2 mx-2 text-sm text-white transition-colors hover:bg-blue-700">
+                <Link
+                  to="/register"
+                  onClick={closeMenu}
+                  className="inline-block w-fit rounded-lg bg-blue-600 px-4 py-2 mx-2 text-sm text-white transition-colors hover:bg-blue-700"
+                >
                   Register
                 </Link>
               </>
