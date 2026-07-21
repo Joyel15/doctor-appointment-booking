@@ -14,6 +14,8 @@ import DoctorProfile from "./pages/public/DoctorProfile.jsx";
 import Unauthorized from "./pages/public/Unauthorized.jsx";
 import NotFound from "./pages/public/NotFound.jsx";
 import Specializations from "./pages/public/Specializations.jsx";
+import About from "./pages/public/About.jsx";
+import Contact from "./pages/public/Contact.jsx";
 
 // ---------- Patient Pages ----------
 import PatientDashboard from "./pages/patient/Dashboard.jsx";
@@ -108,6 +110,24 @@ function App() {
             }
           />
 
+          <Route
+            path="/about"
+            element={
+              <Layout>
+                <About />
+              </Layout>
+            }
+          />
+
+          <Route
+            path="/contact"
+            element={
+              <Layout>
+                <Contact />
+              </Layout>
+            }
+          />
+
           {/* ===================== PATIENT ROUTES ===================== */}
 
           <Route
@@ -170,7 +190,7 @@ function App() {
             element={
               <ProtectedRoute role="patient">
                 <Layout>
-                <PatientEditProfile />
+                  <PatientEditProfile />
                 </Layout>
               </ProtectedRoute>
             }
