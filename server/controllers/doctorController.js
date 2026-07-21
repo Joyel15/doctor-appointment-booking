@@ -163,37 +163,25 @@ export const updateDoctor = async (req, res) => {
 
 
   // Get logged-in doctor's own profile
-  export const getMyProfile = async (req, res) => {
+ export const getMyProfile = async (req, res) => {
   try {
-    // req.user is added by authMiddleware after verifying the JWT.
-    // It contains the logged-in user's id and role.
     const userId = req.user.id;
 
-    // Find the doctor profile linked to this user account.
-    // populate() replaces doctorId ObjectId with selected user details.
     const doctor = await Doctor.findOne({ doctorId: userId }).populate(
       "doctorId",
       "name email phone profilePic"
     );
 
-    // If no doctor profile exists, return 404.
     if (!doctor) {
       return res.status(404).json({
-        success: false,
         message: "Doctor profile not found.",
       });
     }
 
-    // Return the doctor's profile.
-    return res.status(200).json({
-      success: true,
-      doctor,
-    });
+    return res.status(200).json(doctor);
   } catch (error) {
     console.error("Get doctor profile error:", error);
-
     return res.status(500).json({
-      success: false,
       message: "Failed to fetch doctor profile.",
     });
   }
