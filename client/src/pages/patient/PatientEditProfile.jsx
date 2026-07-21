@@ -3,6 +3,8 @@ import { toast } from "sonner";
 import axios from "../../api/axios.js";
 import Spinner from "../../components/common/Spinner.jsx";
 import { useAuth } from "../../context/AuthContext.jsx";
+import { Link } from "react-router-dom";
+import { FaArrowLeft } from "react-icons/fa";
 
 const PatientEditProfile = () => {
   const { user, login, token } = useAuth();
@@ -80,8 +82,7 @@ const PatientEditProfile = () => {
       // Clear password fields after successful save
       setFormData({ ...formData, currentPassword: "", newPassword: "" });
     } catch (err) {
-      const message =
-        err.response?.data?.message || "Failed to update profile";
+      const message = err.response?.data?.message || "Failed to update profile";
       toast.error(message);
     } finally {
       setSaving(false);
@@ -98,6 +99,13 @@ const PatientEditProfile = () => {
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-10 max-w-2xl mx-auto">
+      <Link
+        to="/patient/dashboard"
+        className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-blue-600 transition mb-4"
+      >
+        <FaArrowLeft size={12} />
+        Back to Dashboard
+      </Link>
       <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-8">
         Edit Profile
       </h1>

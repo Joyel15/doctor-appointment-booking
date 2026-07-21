@@ -20,6 +20,7 @@ const Footer = () => {
             <Link to="/doctors" className="hover:text-blue-600 transition">
               Doctors
             </Link>
+            
           </div>
         </div>
 

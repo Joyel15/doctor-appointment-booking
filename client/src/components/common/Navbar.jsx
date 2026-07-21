@@ -40,6 +40,18 @@ const Navbar = () => {
     navigate("/login");
   };
 
+  // Small reusable avatar — shows photo if available, otherwise the icon
+  const Avatar = ({ size = "text-lg", pixelSize = "w-6 h-6" }) =>
+    user?.profilePic ? (
+      <img
+        src={user.profilePic}
+        alt={user.name}
+        className={`${pixelSize} rounded-full object-cover`}
+      />
+    ) : (
+      <FaUserCircle className={size} />
+    );
+
   return (
     <nav
       className={`sticky top-0 z-50 transition-all duration-300 ${
@@ -92,8 +104,8 @@ const Navbar = () => {
                   to={getDashboardLink()}
                   className="flex items-center gap-2 text-gray-700 hover:text-blue-600 transition-colors"
                 >
-                  <FaUserCircle className="text-lg" />
-                  <span className="text-sm">Hi, {user.name}</span>
+                  <Avatar pixelSize="w-7 h-7" />
+                  <span className="text-sm">Account</span>
                 </Link>
 
                 <button
@@ -182,8 +194,8 @@ const Navbar = () => {
                   onClick={closeMenu}
                   className="flex items-center gap-2 py-1 px-2 text-gray-700 hover:text-blue-600 transition-colors"
                 >
-                  <FaUserCircle className="text-lg" />
-                  <span className="text-sm">Hi, {user.name}</span>
+                  <Avatar pixelSize="w-7 h-7" />
+                  <span className="text-sm">Account</span>
                 </Link>
 
                 <button

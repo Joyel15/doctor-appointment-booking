@@ -169,7 +169,9 @@ function App() {
             path="/patient/profile"
             element={
               <ProtectedRoute role="patient">
+                <Layout>
                 <PatientEditProfile />
+                </Layout>
               </ProtectedRoute>
             }
           />

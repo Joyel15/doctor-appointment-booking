@@ -3,6 +3,8 @@ import { toast } from "sonner";
 import axios from "../../api/axios.js";
 import Spinner from "../../components/common/Spinner.jsx";
 import { useAuth } from "../../context/AuthContext.jsx";
+import { Link } from "react-router-dom";
+import { FaArrowLeft } from "react-icons/fa";
 
 const EditProfile = () => {
   const { user, login, token } = useAuth();
@@ -136,7 +138,9 @@ const EditProfile = () => {
         newPassword: "",
       }));
     } catch (err) {
-      toast.error(err.response?.data?.message || "Failed to update personal info");
+      toast.error(
+        err.response?.data?.message || "Failed to update personal info",
+      );
     } finally {
       setSavingPersonal(false);
     }
@@ -169,14 +173,20 @@ const EditProfile = () => {
       toast.success("Professional info updated successfully");
       fetchProfile();
     } catch (err) {
-      toast.error(err.response?.data?.message || "Failed to update professional info");
+      toast.error(
+        err.response?.data?.message || "Failed to update professional info",
+      );
     } finally {
       setSavingDoctor(false);
     }
   };
 
   if (loading) {
-    return <div className="px-4 py-10"><Spinner /></div>;
+    return (
+      <div className="px-4 py-10">
+        <Spinner />
+      </div>
+    );
   }
 
   if (error) {
@@ -195,6 +205,13 @@ const EditProfile = () => {
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-10 max-w-2xl mx-auto space-y-8">
+      <Link
+        to="/doctor/dashboard"
+        className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-blue-600 transition mb-4"
+      >
+        <FaArrowLeft size={12} />
+        Back to Dashboard
+      </Link>
       <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
         Edit Profile
       </h1>
@@ -316,7 +333,10 @@ const EditProfile = () => {
 
         {/* Specialization */}
         <div>
-          <label className="block text-sm font-medium mb-1" htmlFor="specialization">
+          <label
+            className="block text-sm font-medium mb-1"
+            htmlFor="specialization"
+          >
             Specialization
           </label>
           <input
@@ -332,7 +352,10 @@ const EditProfile = () => {
 
         {/* Experience */}
         <div>
-          <label className="block text-sm font-medium mb-1" htmlFor="experience">
+          <label
+            className="block text-sm font-medium mb-1"
+            htmlFor="experience"
+          >
             Experience (Years)
           </label>
           <input
