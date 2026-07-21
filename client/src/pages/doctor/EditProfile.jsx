@@ -31,6 +31,7 @@ const EditProfile = () => {
   // Profile picture
   const [profilePic, setProfilePic] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
+  const [removePhoto, setRemovePhoto] = useState(false);
 
   // UI states
   const [loading, setLoading] = useState(true);
@@ -94,6 +95,13 @@ const EditProfile = () => {
     if (!file) return;
     setProfilePic(file);
     setPreviewUrl(URL.createObjectURL(file));
+    setRemovePhoto(false); // picking a new file cancels any pending removal
+  };
+
+  const handleRemovePhoto = () => {
+    setProfilePic(null);
+    setPreviewUrl(null);
+    setRemovePhoto(true); // flag to tell backend to clear it
   };
 
   // -----------------------------
@@ -120,6 +128,8 @@ const EditProfile = () => {
 
       if (profilePic) {
         data.append("profilePic", profilePic);
+      } else if (removePhoto) {
+        data.append("removePhoto", "true");
       }
 
       const res = await axios.put("/auth/profile", data, {
@@ -131,12 +141,13 @@ const EditProfile = () => {
       // Update AuthContext with new user data
       login(res.data, token);
 
-      // Clear password fields
+      // Clear password fields and removal flag
       setPersonalData((prev) => ({
         ...prev,
         currentPassword: "",
         newPassword: "",
       }));
+      setRemovePhoto(false);
     } catch (err) {
       toast.error(
         err.response?.data?.message || "Failed to update personal info",
@@ -249,12 +260,25 @@ const EditProfile = () => {
             onChange={handleFileChange}
             className="hidden"
           />
-          <label
-            htmlFor="profilePic"
-            className="text-xs text-blue-600 hover:underline cursor-pointer"
-          >
-            {previewUrl ? "Change photo" : "Upload photo"}
-          </label>
+
+          <div className="flex items-center gap-3">
+            <label
+              htmlFor="profilePic"
+              className="text-xs text-blue-600 hover:underline cursor-pointer"
+            >
+              {previewUrl ? "Change photo" : "Upload photo"}
+            </label>
+
+            {previewUrl && (
+              <button
+                type="button"
+                onClick={handleRemovePhoto}
+                className="text-xs text-red-600 hover:underline"
+              >
+                Remove
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Name */}
