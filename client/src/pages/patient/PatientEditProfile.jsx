@@ -21,6 +21,7 @@ const PatientEditProfile = () => {
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [removePhoto, setRemovePhoto] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -44,6 +45,13 @@ const PatientEditProfile = () => {
     if (!file) return;
     setProfilePic(file);
     setPreviewUrl(URL.createObjectURL(file));
+    setRemovePhoto(false); // picking a new file cancels any pending removal
+  };
+
+  const handleRemovePhoto = () => {
+    setProfilePic(null);
+    setPreviewUrl(null);
+    setRemovePhoto(true); // flag to tell backend to clear it
   };
 
   const handleSubmit = async (e) => {
@@ -68,6 +76,8 @@ const PatientEditProfile = () => {
 
       if (profilePic) {
         data.append("profilePic", profilePic);
+      } else if (removePhoto) {
+        data.append("removePhoto", "true");
       }
 
       const res = await axios.put("/auth/profile", data, {
@@ -79,8 +89,9 @@ const PatientEditProfile = () => {
       // Refresh auth context with the updated user info (keep existing token)
       login(res.data, token);
 
-      // Clear password fields after successful save
+      // Clear password fields and removal flag after successful save
       setFormData({ ...formData, currentPassword: "", newPassword: "" });
+      setRemovePhoto(false);
     } catch (err) {
       const message = err.response?.data?.message || "Failed to update profile";
       toast.error(message);
@@ -138,12 +149,25 @@ const PatientEditProfile = () => {
             onChange={handleFileChange}
             className="hidden"
           />
-          <label
-            htmlFor="profilePic"
-            className="text-xs text-blue-600 hover:underline cursor-pointer"
-          >
-            Change photo
-          </label>
+
+          <div className="flex items-center gap-3">
+            <label
+              htmlFor="profilePic"
+              className="text-xs text-blue-600 hover:underline cursor-pointer"
+            >
+              Change photo
+            </label>
+
+            {previewUrl && (
+              <button
+                type="button"
+                onClick={handleRemovePhoto}
+                className="text-xs text-red-600 hover:underline"
+              >
+                Remove
+              </button>
+            )}
+          </div>
         </div>
 
         <div>
