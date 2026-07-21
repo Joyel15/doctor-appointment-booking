@@ -4,7 +4,7 @@ const DoctorCard = ({ doctor }) => {
   return (
     <Link
       to={`/doctors/${doctor._id}`}
-      className="bg-white/90 rounded-xl shadow-sm hover:shadow-md transition p-6 text-center hover:outline hover:outline-blue-500 transition-all"
+      className="bg-white/90 rounded-xl shadow-sm hover:shadow-md hover:ring-1 hover:ring-blue-500 transition-all duration-100 p-6 text-center"
     >
       {/* Avatar */}
       <div className="w-16 h-16 rounded-full bg-blue-100 mx-auto mb-4 flex items-center justify-center text-blue-600 font-bold text-xl">

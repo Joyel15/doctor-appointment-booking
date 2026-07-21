@@ -153,7 +153,7 @@ const Dashboard = () => {
 
         <Link
           to="/admin/users"
-          className="border border-gray-300 text-gray-700 text-center px-6 py-3 rounded-lg hover:bg-gray-50 transition"
+          className="border bg-white/80 border-gray-300 text-gray-700 text-center px-6 py-3 rounded-lg hover:text-blue-700 transition"
         >
           Manage Users
         </Link>
