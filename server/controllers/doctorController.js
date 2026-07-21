@@ -1,4 +1,5 @@
 import Doctor from "../models/Doctor.js";
+import Review from "../models/Review.js";
 
 // Allow a logged-in user to submit a doctor application
 export const applyDoctor = async (req,res) => {
@@ -46,24 +47,34 @@ export const applyDoctor = async (req,res) => {
 
 
 // Retrieve all approved doctors (public endpoint)
-export const getAllDoctors = async (req,res) => {
+export const getAllDoctors = async (req, res) => {
   try {
-    // Find only doctors approved by the admin
-    // Populate selected user information linked through doctorId
     const doctors = await Doctor.find({ isApproved: true }).populate(
       "doctorId",
-      "name email profilePic phone"
+      "name email phone profilePic"
     );
 
-    // Return list of approved doctors
-    res.status(200).json(doctors);
+    // Compute average rating + review count per doctor
+    const doctorsWithRatings = await Promise.all(
+      doctors.map(async (doctor) => {
+        const reviews = await Review.find({ doctorId: doctor._id });
 
-  } catch(error){
-    // Handle unexpected server errors
-    return res.status(500).json({
-      message : "Server error",
-      error : error.message,
-    });
+        const avgRating =
+          reviews.length > 0
+            ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
+            : null;
+
+        return {
+          ...doctor.toObject(),
+          avgRating: avgRating ? Number(avgRating.toFixed(1)) : null,
+          reviewCount: reviews.length,
+        };
+      })
+    );
+
+    res.status(200).json(doctorsWithRatings);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
