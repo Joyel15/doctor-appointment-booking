@@ -1,8 +1,16 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { FaUsers, FaUserMd, FaHourglassHalf } from "react-icons/fa";
 import axios from "../../api/axios.js";
 import Spinner from "../../components/common/Spinner.jsx";
 import { useAuth } from "../../context/AuthContext.jsx";
+
+// Icon + accent color per stat label
+const statIconMap = {
+  "Total Users": { icon: FaUsers, color: "text-blue-600", bg: "bg-blue-100" },
+  "Doctors": { icon: FaUserMd, color: "text-green-600", bg: "bg-green-100" },
+  "Pending Applications": { icon: FaHourglassHalf, color: "text-yellow-600", bg: "bg-yellow-100" },
+};
 
 const Dashboard = () => {
   // Logged-in admin information
@@ -63,21 +71,9 @@ const Dashboard = () => {
 
   // Data used to render statistic cards
   const stats = [
-    {
-      label: "Total Users",
-      value: totalUsers,
-      color: "bg-blue-50 text-blue-700",
-    },
-    {
-      label: "Doctors",
-      value: totalDoctors,
-      color: "bg-green-50 text-green-700",
-    },
-    {
-      label: "Pending Applications",
-      value: pendingApplications,
-      color: "bg-yellow-50 text-yellow-700",
-    },
+    { label: "Total Users", value: totalUsers },
+    { label: "Doctors", value: totalDoctors },
+    { label: "Pending Applications", value: pendingApplications },
   ];
 
   // ---------------------------------
@@ -121,13 +117,29 @@ const Dashboard = () => {
 
       {/* Dashboard statistics */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
-        {stats.map((stat) => (
-          <div key={stat.label} className={`rounded-xl p-5 ${stat.color}`}>
-            <p className="text-3xl font-bold">{stat.value}</p>
+        {stats.map((stat) => {
+          const iconData = statIconMap[stat.label] || {
+            icon: FaUsers,
+            color: "text-gray-600",
+            bg: "bg-gray-100",
+          };
+          const Icon = iconData.icon;
 
-            <p className="text-sm mt-1">{stat.label}</p>
-          </div>
-        ))}
+          return (
+            <div
+              key={stat.label}
+              className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow"
+            >
+              <div
+                className={`w-10 h-10 rounded-full flex items-center justify-center mb-3 ${iconData.bg} ${iconData.color}`}
+              >
+                <Icon size={16} />
+              </div>
+              <p className="text-3xl font-bold text-gray-900">{stat.value}</p>
+              <p className="text-sm text-gray-500 mt-1">{stat.label}</p>
+            </div>
+          );
+        })}
       </div>
 
       {/* Quick actions */}

@@ -1,4 +1,10 @@
 import { Link } from "react-router-dom";
+import {
+  FaCalendarAlt,
+  FaHourglassHalf,
+  FaCheckCircle,
+  FaClipboardCheck,
+} from "react-icons/fa";
 import Spinner from "../../components/common/Spinner.jsx";
 import { useAuth } from "../../context/AuthContext.jsx";
 import usePatientDashboard from "../../hooks/usePatientDashboard.js";
@@ -8,6 +14,14 @@ const statusStyles = {
   confirmed: "bg-green-100 text-green-700",
   cancelled: "bg-red-100 text-red-700",
   completed: "bg-blue-100 text-blue-700",
+};
+
+// Icon + accent color per stat label
+const statIconMap = {
+  "Total Appointments": { icon: FaCalendarAlt, color: "text-blue-600", bg: "bg-blue-100" },
+  "Pending": { icon: FaHourglassHalf, color: "text-yellow-600", bg: "bg-yellow-100" },
+  "Confirmed": { icon: FaCheckCircle, color: "text-green-600", bg: "bg-green-100" },
+  "Completed": { icon: FaClipboardCheck, color: "text-purple-600", bg: "bg-purple-100" },
 };
 
 const Dashboard = () => {
@@ -41,12 +55,31 @@ const Dashboard = () => {
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
-        {stats.map((stat) => (
-          <div key={stat.label} className={`rounded-xl p-4 sm:p-6 ${stat.color}`}>
-            <p className="text-2xl sm:text-3xl font-bold">{stat.value}</p>
-            <p className="text-sm mt-1">{stat.label}</p>
-          </div>
-        ))}
+        {stats.map((stat) => {
+          const iconData = statIconMap[stat.label] || {
+            icon: FaCalendarAlt,
+            color: "text-gray-600",
+            bg: "bg-gray-100",
+          };
+          const Icon = iconData.icon;
+
+          return (
+            <div
+              key={stat.label}
+              className="bg-white rounded-xl p-4 sm:p-5 shadow-sm hover:shadow-md transition-shadow"
+            >
+              <div
+                className={`w-10 h-10 rounded-full flex items-center justify-center mb-3 ${iconData.bg} ${iconData.color}`}
+              >
+                <Icon size={16} />
+              </div>
+              <p className="text-2xl sm:text-3xl font-bold text-gray-900">
+                {stat.value}
+              </p>
+              <p className="text-sm text-gray-500 mt-1">{stat.label}</p>
+            </div>
+          );
+        })}
       </div>
 
       {/* Quick navigation */}
@@ -88,58 +121,101 @@ const Dashboard = () => {
             You haven't booked any appointments yet.
           </p>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-gray-50 text-gray-500">
-                <tr>
-                  <th className="text-left px-6 py-3 font-medium">Doctor</th>
-                  <th className="text-left px-6 py-3 font-medium">Date</th>
-                  <th className="text-left px-6 py-3 font-medium">Time Slot</th>
-                  <th className="text-left px-6 py-3 font-medium">Status</th>
-                  <th className="text-left px-6 py-3 font-medium">Action</th>
-                </tr>
-              </thead>
+          <>
+            {/* Desktop table */}
+            <div className="hidden sm:block overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-gray-50 text-gray-500">
+                  <tr>
+                    <th className="text-left px-6 py-3 font-medium">Doctor</th>
+                    <th className="text-left px-6 py-3 font-medium">Date</th>
+                    <th className="text-left px-6 py-3 font-medium">Time Slot</th>
+                    <th className="text-left px-6 py-3 font-medium">Status</th>
+                    <th className="text-left px-6 py-3 font-medium">Action</th>
+                  </tr>
+                </thead>
 
-              <tbody>
-                {recentAppointments.map((appointment) => (
-                  <tr key={appointment._id} className="border-t border-gray-100">
-                    <td className="px-6 py-3 whitespace-nowrap">
+                <tbody>
+                  {recentAppointments.map((appointment, index) => (
+                    <tr
+                      key={appointment._id}
+                      className={`border-t border-gray-100 ${
+                        index % 2 === 1 ? "bg-gray-50/50" : ""
+                      } hover:bg-blue-50/40 transition-colors`}
+                    >
+                      <td className="px-6 py-3.5 whitespace-nowrap font-medium text-gray-900">
+                        Dr.{" "}
+                        {appointment.doctorId?.doctorId?.name ||
+                          appointment.doctorId?.name ||
+                          "N/A"}
+                      </td>
+                      <td className="px-6 py-3.5 whitespace-nowrap text-gray-600">
+                        {appointment.date}
+                      </td>
+                      <td className="px-6 py-3.5 whitespace-nowrap text-gray-600">
+                        {appointment.timeSlot}
+                      </td>
+                      <td className="px-6 py-3.5 whitespace-nowrap">
+                        <span
+                          className={`px-2.5 py-1 rounded-full text-xs font-medium ${
+                            statusStyles[appointment.status] ||
+                            "bg-gray-100 text-gray-700"
+                          }`}
+                        >
+                          {appointment.status}
+                        </span>
+                      </td>
+                      <td className="px-6 py-3.5 whitespace-nowrap">
+                        {appointment.status === "completed" && (
+                          <button
+                            onClick={() => setReviewModal(appointment)}
+                            className="text-blue-600 font-medium hover:underline"
+                          >
+                            Write Review
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile card list */}
+            <div className="sm:hidden divide-y divide-gray-100">
+              {recentAppointments.map((appointment) => (
+                <div key={appointment._id} className="px-4 py-4">
+                  <div className="flex items-start justify-between mb-2">
+                    <p className="font-medium text-gray-900">
                       Dr.{" "}
                       {appointment.doctorId?.doctorId?.name ||
                         appointment.doctorId?.name ||
                         "N/A"}
-                    </td>
-                    <td className="px-6 py-3 whitespace-nowrap">
-                      {appointment.date}
-                    </td>
-                    <td className="px-6 py-3 whitespace-nowrap">
-                      {appointment.timeSlot}
-                    </td>
-                    <td className="px-6 py-3 whitespace-nowrap">
-                      <span
-                        className={`px-2.5 py-1 rounded-full text-xs font-medium ${
-                          statusStyles[appointment.status] ||
-                          "bg-gray-100 text-gray-700"
-                        }`}
-                      >
-                        {appointment.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-3 whitespace-nowrap">
-                      {appointment.status === "completed" && (
-                        <button
-                          onClick={() => setReviewModal(appointment)}
-                          className="text-blue-600 font-medium hover:underline"
-                        >
-                          Write Review
-                        </button>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                    </p>
+                    <span
+                      className={`px-2.5 py-1 rounded-full text-xs font-medium shrink-0 ${
+                        statusStyles[appointment.status] ||
+                        "bg-gray-100 text-gray-700"
+                      }`}
+                    >
+                      {appointment.status}
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-500">
+                    {appointment.date} • {appointment.timeSlot}
+                  </p>
+                  {appointment.status === "completed" && (
+                    <button
+                      onClick={() => setReviewModal(appointment)}
+                      className="text-blue-600 text-sm font-medium hover:underline mt-2"
+                    >
+                      Write Review
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          </>
         )}
       </div>
 
