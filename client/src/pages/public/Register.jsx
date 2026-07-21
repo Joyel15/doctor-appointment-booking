@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "sonner";
+import { FaUser, FaEnvelope, FaLock, FaPhone } from "react-icons/fa";
 import axios from "../../api/axios.js";
 
 const Register = () => {
@@ -33,7 +34,6 @@ const Register = () => {
     setLoading(true);
 
     try {
-      // Build multipart form data since we may be sending a file
       const data = new FormData();
       data.append("name", formData.name);
       data.append("email", formData.email);
@@ -61,16 +61,20 @@ const Register = () => {
 
   return (
     <div className="flex items-center justify-center min-h-[80vh] px-4 py-8">
-      <div className="w-full max-w-sm sm:max-w-md bg-white rounded-xl shadow-md p-6 sm:p-8">
-        <h1 className="text-2xl font-semibold text-center mb-6">
-          Create Account
-        </h1>
+      <div className="w-full max-w-sm sm:max-w-md bg-white/95 rounded-2xl shadow-lg p-8 sm:p-10">
+        {/* Header */}
+        <div className="text-center mb-6">
+          <h1 className="text-2xl font-bold text-gray-900">Create Account</h1>
+          <p className="text-sm text-gray-500 mt-1">
+            Book trusted doctors in minutes
+          </p>
+        </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Profile picture (optional) */}
           <div className="flex flex-col items-center mb-2">
             <label htmlFor="profilePic" className="cursor-pointer">
-              <div className="w-20 h-20 rounded-full bg-gray-100 border border-gray-300 flex items-center justify-center overflow-hidden mb-2">
+              <div className="w-20 h-20 rounded-full bg-blue-50 border-2 border-dashed border-blue-200 flex items-center justify-center overflow-hidden mb-2 hover:border-blue-400 transition">
                 {previewUrl ? (
                   <img
                     src={previewUrl}
@@ -78,9 +82,7 @@ const Register = () => {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <span className="text-xs text-gray-400 text-center px-2">
-                    Add Photo
-                  </span>
+                  <FaUser className="text-blue-300" size={24} />
                 )}
               </div>
             </label>
@@ -99,77 +101,89 @@ const Register = () => {
             </label>
           </div>
 
+          {/* Name */}
           <div>
-            <label className="block text-sm font-medium mb-1" htmlFor="name">
+            <label className="block text-sm font-medium mb-1.5 text-gray-700" htmlFor="name">
               Full Name
             </label>
-            <input
-              id="name"
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter your name"
-            />
+            <div className="relative">
+              <FaUser className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
+              <input
+                id="name"
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+                className="w-full border border-gray-300 rounded-lg pl-10 pr-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                placeholder="Enter your name"
+              />
+            </div>
           </div>
 
+          {/* Email */}
           <div>
-            <label className="block text-sm font-medium mb-1" htmlFor="email">
+            <label className="block text-sm font-medium mb-1.5 text-gray-700" htmlFor="email">
               Email
             </label>
-            <input
-              id="email"
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter your email"
-            />
+            <div className="relative">
+              <FaEnvelope className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
+              <input
+                id="email"
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                className="w-full border border-gray-300 rounded-lg pl-10 pr-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                placeholder="Enter email"
+              />
+            </div>
           </div>
 
+          {/* Password */}
           <div>
-            <label
-              className="block text-sm font-medium mb-1"
-              htmlFor="password"
-            >
+            <label className="block text-sm font-medium mb-1.5 text-gray-700" htmlFor="password">
               Password
             </label>
-            <input
-              id="password"
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              placeholder="Enter password"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+            <div className="relative">
+              <FaLock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
+              <input
+                id="password"
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                placeholder="••••••••"
+                className="w-full border border-gray-300 rounded-lg pl-10 pr-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+              />
+            </div>
           </div>
 
+          {/* Phone */}
           <div>
-            <label className="block text-sm font-medium mb-1" htmlFor="phone">
+            <label className="block text-sm font-medium mb-1.5 text-gray-700" htmlFor="phone">
               Phone
             </label>
-            <input
-              id="phone"
-              type="tel"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              required
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter your phone number"
-            />
+            <div className="relative">
+              <FaPhone className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
+              <input
+                id="phone"
+                type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                required
+                className="w-full border border-gray-300 rounded-lg pl-10 pr-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+              />
+            </div>
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 text-white font-medium py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-60 disabled:cursor-not-allowed"
+            className="w-full bg-blue-600 text-white font-semibold py-2.5 rounded-lg hover:bg-blue-700 transition shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {loading ? "Creating account..." : "Register"}
           </button>
@@ -177,7 +191,7 @@ const Register = () => {
 
         <p className="text-sm text-center mt-6 text-gray-600">
           Already have an account?{" "}
-          <Link to="/login" className="text-blue-600 font-medium hover:underline">
+          <Link to="/login" className="text-blue-600 font-semibold hover:underline">
             Login
           </Link>
         </p>

@@ -20,7 +20,7 @@ const DoctorCard = ({ doctor }) => {
       </p>
 
       <p className="text-sm text-gray-600">
-        ₹{doctor.fees} • {doctor.experience} years experience
+        {doctor.experience} years of experience
       </p>
     </Link>
   );
