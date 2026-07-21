@@ -206,26 +206,6 @@ const BookAppointment = () => {
           {submitting ? "Booking Appointment..." : "Confirm Booking"}
         </button>
       </form>
-
-      {/* Legend */}
-      <div className="flex flex-wrap gap-4 mt-4 text-xs text-gray-500">
-        <div className="flex items-center gap-1">
-          <div className="w-3 h-3 rounded bg-white border border-gray-300"></div>
-          Available
-        </div>
-        <div className="flex items-center gap-1">
-          <div className="w-3 h-3 rounded bg-blue-600"></div>
-          Selected
-        </div>
-        <div className="flex items-center gap-1">
-          <div className="w-3 h-3 rounded bg-gray-100 border border-gray-200"></div>
-          Booked
-        </div>
-        <div className="flex items-center gap-1">
-          <div className="w-3 h-3 rounded bg-gray-50 border border-gray-100"></div>
-          Past
-        </div>
-      </div>
     </div>
   );
 };
