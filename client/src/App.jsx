@@ -4,6 +4,7 @@ import { Toaster } from "sonner";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import ProtectedRoute from "./components/common/ProtectedRoute.jsx";
 import Layout from "./components/common/Layout.jsx";
+import ScrollToTop from "./components/common/ScrolltoTop.jsx";
 
 // ---------- Public Pages ----------
 import Home from "./pages/public/Home.jsx";
@@ -43,6 +44,7 @@ function App() {
       <AuthProvider>
         {/* Global toast notifications */}
         <Toaster position="top-center" richColors />
+        <ScrollToTop />
 
         <Routes>
           {/* ===================== PUBLIC ROUTES ===================== */}

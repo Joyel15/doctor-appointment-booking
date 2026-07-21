@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import axios from "../../api/axios.js";
 import Spinner from "../../components/common/Spinner.jsx";
 import DoctorCard from "../../components/doctor/DoctorCard.jsx";
@@ -13,6 +13,7 @@ import {
 } from "react-icons/fa";
 
 const Home = () => {
+  const location = useLocation();
   const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -44,6 +45,18 @@ const Home = () => {
       isMounted = false;
     };
   }, []);
+
+  // Scroll to section if URL has a hash (e.g. /#how-it-works)
+  useEffect(() => {
+    if (location.hash) {
+      setTimeout(() => {
+        const el = document.querySelector(location.hash);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }, 100);
+    }
+  }, [location]);
 
   return (
     <div className="space-y-8">
@@ -107,7 +120,7 @@ const Home = () => {
       </section>
 
       {/* ================= HOW IT WORKS ================= */}
-      <section className="px-4 sm:px-6 lg:px-8 py-16">
+      <section id="how-it-works" className="px-4 sm:px-6 lg:px-8 py-16">
         <div className="max-w-5xl mx-auto">
           <h2 className="text-2xl sm:text-3xl font-bold text-center text-gray-900 mb-12">
             How It Works
@@ -153,7 +166,10 @@ const Home = () => {
       </section>
 
       {/* ================= WHY CHOOSE US ================= */}
-      <section className="bg-blue-50/80 px-4 sm:px-6 lg:px-8 py-16 sm:py-24 rounded-2xl">
+      <section
+        id="why-choose-us"
+        className="bg-blue-50/80 px-4 sm:px-6 lg:px-8 py-16 sm:py-24 rounded-2xl"
+      >
         <div className="max-w-5xl mx-auto">
           <h2 className="text-2xl sm:text-3xl font-bold text-center text-gray-900 mb-12">
             Why Choose Us
@@ -190,7 +206,10 @@ const Home = () => {
       </section>
 
       {/* ================= FEATURED DOCTORS ================= */}
-      <section className="bg-white/80 px-4 sm:px-6 lg:px-8 py-16 rounded-2xl">
+      <section
+        id="featured-doctors"
+        className="bg-white/80 px-4 sm:px-6 lg:px-8 py-16 rounded-2xl"
+      >
         <div className="max-w-5xl mx-auto">
           <h2 className="text-2xl sm:text-3xl font-bold text-center text-gray-900 mb-12">
             Featured Doctors
