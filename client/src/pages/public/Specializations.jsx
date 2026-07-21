@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { specializations, popularSearches } from "../../data/specializations.js";
 
@@ -31,11 +31,14 @@ const categoryIcons = {
 const Specializations = () => {
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
 
   const query = search.toLowerCase().trim();
 
-  // Match against specialization name OR symptom keywords
-  // Also checks if query contains the keyword (fixes "skin rash" matching)
   const filteredSpecializations = specializations.filter((spec) => {
     if (!query) return true;
 
@@ -49,7 +52,6 @@ const Specializations = () => {
     return nameMatch || keywordMatch;
   });
 
-  // Group filtered results by category
   const grouped = filteredSpecializations.reduce((acc, spec) => {
     if (!acc[spec.category]) acc[spec.category] = [];
     acc[spec.category].push(spec);
@@ -64,7 +66,6 @@ const Specializations = () => {
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-10 max-w-5xl mx-auto">
-
       {/* Page Header */}
       <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 text-center">
         Not Sure Who to See?
@@ -74,18 +75,28 @@ const Specializations = () => {
       </p>
 
       {/* Search bar */}
-      <div className="max-w-md mx-auto mb-4">
+      <div className="max-w-md mx-auto mb-4 relative">
         <input
+          ref={inputRef}
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="e.g. chest pain, skin rash, fever..."
-          className="w-full border border-gray-300 bg-neutral-50 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full border border-gray-300 bg-neutral-50 rounded-lg px-4 py-2.5 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
+        {search && (
+          <button
+            onClick={() => setSearch("")}
+            aria-label="Clear search"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition"
+          >
+            ✕
+          </button>
+        )}
       </div>
 
       {/* Popular search chips */}
-      <div className="flex flex-wrap justify-center gap-2 mb-10">
+      <div className="flex flex-wrap justify-center gap-2 mb-6">
         {popularSearches.map((term) => (
           <button
             key={term}
@@ -96,6 +107,14 @@ const Specializations = () => {
           </button>
         ))}
       </div>
+
+      {/* Result count */}
+      {search && filteredSpecializations.length > 0 && (
+        <p className="text-center text-sm text-gray-500 mb-6">
+          {filteredSpecializations.length} specialist
+          {filteredSpecializations.length !== 1 ? "s" : ""} found
+        </p>
+      )}
 
       {/* Empty state */}
       {filteredSpecializations.length === 0 ? (
@@ -118,7 +137,6 @@ const Specializations = () => {
         <div className="space-y-10">
           {Object.entries(grouped).map(([category, specs]) => (
             <div key={category}>
-
               {/* Category heading with emoji */}
               <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                 <span className="text-2xl">
@@ -147,12 +165,10 @@ const Specializations = () => {
                   </button>
                 ))}
               </div>
-
             </div>
           ))}
         </div>
       )}
-
     </div>
   );
 };

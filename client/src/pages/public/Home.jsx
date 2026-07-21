@@ -49,7 +49,7 @@ const Home = () => {
     <div className="space-y-8">
       {/* ================= HERO SECTION ================= */}
       <section
-        className="relative overflow-hidden rounded-2xl min-h-[480px] sm:min-h-[560px] flex items-center"
+        className="relative overflow-hidden rounded-2xl min-h-[520px] sm:min-h-[600px] flex items-center"
         style={{
           backgroundImage: "url('/images/doctor1.png')",
           backgroundSize: "cover",
@@ -58,40 +58,47 @@ const Home = () => {
         }}
       >
         {/* Dark overlay for text readability */}
-        <div className="absolute inset-0 bg-black/50"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-black/30"></div>
 
         {/* Content */}
         <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center w-full">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
-            Find the Right Doctor, Right When You Need Them
+          {/* Eyebrow badge */}
+          <span className="inline-block bg-white/15 backdrop-blur-sm border border-white/25 text-white text-xs font-medium px-4 py-1.5 rounded-full mb-6">
+            Trusted by patients across the country
+          </span>
+
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-tight tracking-tight mb-5">
+            Find the Right Doctor,
+            <br className="hidden sm:block" />
+            Right When You Need Them
           </h1>
 
-          <p className="text-base sm:text-lg text-gray-100 mb-8 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-gray-200 mb-10 max-w-2xl mx-auto leading-relaxed">
             Book appointments with trusted doctors in just a few clicks —
             simple, fast, and reliable healthcare booking.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
             <Link
               to="/doctors"
-              className="w-full sm:w-auto bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition text-center"
+              className="w-full sm:w-auto bg-blue-600 text-white px-8 py-3.5 rounded-lg font-semibold hover:bg-blue-700 transition shadow-lg shadow-blue-900/30 text-center"
             >
               Find a Doctor
             </Link>
 
             <Link
               to="/register"
-              className="w-full sm:w-auto bg-white text-blue-600 px-6 py-3 rounded-lg font-medium hover:bg-blue-50 transition text-center"
+              className="w-full sm:w-auto bg-white/95 text-blue-600 px-8 py-3.5 rounded-lg font-semibold hover:bg-white transition text-center"
             >
               Register
             </Link>
           </div>
 
-          <p className="text-sm text-gray-200 mt-4">
+          <p className="text-sm text-gray-300">
             Not sure which specialist you need?{" "}
             <Link
               to="/specializations"
-              className="text-white font-medium hover:underline"
+              className="text-white font-semibold hover:underline"
             >
               Browse by symptom
             </Link>
