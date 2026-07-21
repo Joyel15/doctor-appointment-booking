@@ -137,11 +137,10 @@ export const updateProfile = async (req, res) => {
 
     // Handle profile picture upload
     if (req.file) {
-      const result = await uploadToCloudinary(
-        req.file.buffer,
-        "medibook/profiles"
-      );
+    const result = await uploadToCloudinary(req.file.buffer, "medibook/profiles");
       user.profilePic = result.secure_url;
+    } else if (req.body.removePhoto === "true") {
+      user.profilePic = "";
     }
 
     await user.save();
