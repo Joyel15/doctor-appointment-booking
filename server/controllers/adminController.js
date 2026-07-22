@@ -49,7 +49,7 @@ export const approveDoctor = async (req, res) => {
     );
     
     // Send approval email to the doctor
-    await sendEmail(
+    sendEmail(
       user.email,
       "Your Doctor Application Has Been Approved",
       `

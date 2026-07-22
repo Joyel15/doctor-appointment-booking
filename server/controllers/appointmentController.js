@@ -41,7 +41,7 @@ export const bookAppointment = async (req, res) => {
     const patient = await User.findById(patientId);
 
     // Send confirmation email to patient
-    await sendEmail(
+    sendEmail(
       patient.email,
       "Appointment Booked Successfully",
       `
