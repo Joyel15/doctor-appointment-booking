@@ -4,7 +4,7 @@ import { Toaster } from "sonner";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import ProtectedRoute from "./components/common/ProtectedRoute.jsx";
 import Layout from "./components/common/Layout.jsx";
-import ScrollToTop from "./components/common/ScrolltoTop.jsx";
+import ScrollToTop from "./components/common/ScrollToTop.jsx";
 
 // ---------- Public Pages ----------
 import Home from "./pages/public/Home.jsx";
