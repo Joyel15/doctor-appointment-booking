@@ -34,7 +34,7 @@ const Login = () => {
       });
 
       // Save authenticated user and access token
-      login(res.data.user, res.data.accessToken);
+      login(res.data.user, res.data.token);
 
       toast.success("Logged in successfully");
 
